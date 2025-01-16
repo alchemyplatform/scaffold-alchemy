@@ -1,13 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { useAccount } from "@account-kit/react";
 import type { NextPage } from "next";
+import { parseEther } from "viem";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
-import { useClient } from "~~/hooks/scaffold-eth/useClient";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 const Home: NextPage = () => {
-  const { address } = useClient();
+  const { address } = useAccount({
+    type: "LightAccount",
+  });
+  const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract({ contractName: "YourContract" });
 
   return (
     <>
@@ -37,6 +42,22 @@ const Home: NextPage = () => {
               packages/hardhat/contracts
             </code>
           </p>
+          <button
+            className="btn btn-primary"
+            onClick={async () => {
+              try {
+                await writeYourContractAsync({
+                  functionName: "setGreeting",
+                  args: ["The value to set again"],
+                  value: parseEther("0.1"),
+                });
+              } catch (e) {
+                console.error("Error setting greeting:", e);
+              }
+            }}
+          >
+            Set Greeting
+          </button>
         </div>
 
         <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">

@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { MutateOptions } from "@tanstack/react-query";
-import { Abi, ExtractAbiFunctionNames } from "abitype";
-import { Config, UseWriteContractParameters, useAccount, useWriteContract } from "wagmi";
-import { WriteContractErrorType, WriteContractReturnType } from "wagmi/actions";
-import { WriteContractVariables } from "wagmi/query";
+import { useChain, useSendUserOperation, useSmartAccountClient } from "@account-kit/react";
+import { ExtractAbiFunctionNames } from "abitype";
+import { Abi, EncodeFunctionDataParameters, WriteContractReturnType, encodeFunctionData } from "viem";
+import { UseWriteContractParameters, useWriteContract } from "wagmi";
 import { useSelectedNetwork } from "~~/hooks/scaffold-eth";
 import { useDeployedContractInfo, useTransactor } from "~~/hooks/scaffold-eth";
 import { AllowedChainIds, notification } from "~~/utils/scaffold-eth";
@@ -68,7 +67,7 @@ export function useScaffoldWriteContract<TContractName extends ContractName>(
     }
   }, [configOrName]);
 
-  const { chain: accountChain } = useAccount();
+  const { chain: accountChain } = useChain();
   const writeTx = useTransactor();
   const [isMining, setIsMining] = useState(false);
 
@@ -80,6 +79,18 @@ export function useScaffoldWriteContract<TContractName extends ContractName>(
     contractName,
     chainId: selectedNetwork.id as AllowedChainIds,
   });
+
+  const { client } = useSmartAccountClient({
+    type: "LightAccount",
+  });
+
+  const { sendUserOperationAsync, sendUserOperation } = useSendUserOperation({
+    client,
+    waitForTxn: true,
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [txValue, setTxValue] = useState<string>("");
 
   const sendContractWriteAsyncTx = async <
     TFunctionName extends ExtractAbiFunctionNames<ContractAbi<TContractName>, "nonpayable" | "payable">,
@@ -104,23 +115,20 @@ export function useScaffoldWriteContract<TContractName extends ContractName>(
 
     try {
       setIsMining(true);
-      const { blockConfirmations, onBlockConfirmation, ...mutateOptions } = options || {};
-      const makeWriteWithParams = () =>
-        wagmiContractWrite.writeContractAsync(
-          {
-            abi: deployedContractData.abi as Abi,
-            address: deployedContractData.address,
-            ...variables,
-          } as WriteContractVariables<Abi, string, any[], Config, number>,
-          mutateOptions as
-            | MutateOptions<
-                WriteContractReturnType,
-                WriteContractErrorType,
-                WriteContractVariables<Abi, string, any[], Config, number>,
-                unknown
-              >
-            | undefined,
-        );
+      const { blockConfirmations, onBlockConfirmation } = options || {};
+      const makeWriteWithParams = async () => {
+        const { hash } = await sendUserOperationAsync({
+          uo: {
+            target: deployedContractData.address,
+            data: encodeFunctionData({
+              abi: deployedContractData.abi as Abi,
+              ...variables,
+            } as EncodeFunctionDataParameters<Abi, string, true, readonly unknown[], string>),
+            value: BigInt(txValue),
+          },
+        });
+        return hash;
+      };
       const writeTxResult = await writeTx(makeWriteWithParams, { blockConfirmations, onBlockConfirmation });
 
       return writeTxResult;
@@ -136,6 +144,7 @@ export function useScaffoldWriteContract<TContractName extends ContractName>(
     TFunctionName extends ExtractAbiFunctionNames<ContractAbi<TContractName>, "nonpayable" | "payable">,
   >(
     variables: ScaffoldWriteContractVariables<TContractName, TFunctionName>,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     options?: Omit<ScaffoldWriteContractOptions, "onBlockConfirmation" | "blockConfirmations">,
   ) => {
     if (!deployedContractData) {
@@ -151,22 +160,16 @@ export function useScaffoldWriteContract<TContractName extends ContractName>(
       notification.error(`Wallet is connected to the wrong network. Please switch to ${selectedNetwork.name}`);
       return;
     }
-
-    wagmiContractWrite.writeContract(
-      {
-        abi: deployedContractData.abi as Abi,
-        address: deployedContractData.address,
-        ...variables,
-      } as WriteContractVariables<Abi, string, any[], Config, number>,
-      options as
-        | MutateOptions<
-            WriteContractReturnType,
-            WriteContractErrorType,
-            WriteContractVariables<Abi, string, any[], Config, number>,
-            unknown
-          >
-        | undefined,
-    );
+    sendUserOperation({
+      uo: {
+        target: deployedContractData.address,
+        data: encodeFunctionData({
+          abi: deployedContractData.abi as Abi,
+          ...variables,
+        } as EncodeFunctionDataParameters<Abi, string, true, readonly unknown[], string>),
+        value: BigInt(txValue),
+      },
+    });
   };
 
   return {
