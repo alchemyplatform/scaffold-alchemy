@@ -1,8 +1,7 @@
 "use client";
 
 import { CurrentWizardProps } from "./page";
-
-// import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 interface SpellButtonProps {
   onClick: () => void;
@@ -64,25 +63,33 @@ const SpellButton = ({ onClick, spellType, text }: SpellButtonProps) => {
 };
 
 export const WizardSpell = (props: CurrentWizardProps) => {
-  // const { writeContractAsync: stupefyWrite, isPending: stupefyLoading } = useScaffoldWriteContract({
-  //   contractName: "HogwartsTournament",
-  //   functionName: "stupefy",
-  //   args: [BigInt(props.otherWizard.tokenId)],
-  // });
+  const { writeContractAsync: stupefyWrite } = useScaffoldWriteContract({
+    contractName: "HogwartsTournament",
+  });
 
-  // const { writeContractAsync: rennervateWrite, isPending: rennervateLoading } = useScaffoldWriteContract({
-  //   contractName: "HogwartsTournament",
-  //   functionName: "rennervate",
-  //   args: [BigInt(props.otherWizard.tokenId)],
-  // });
+  const { writeContractAsync: rennervateWrite } = useScaffoldWriteContract({
+    contractName: "HogwartsTournament",
+  });
 
   if (props.myWizard?.stunned !== false) return <></>;
   if (props.myWizard?.tokenId === props.otherWizard.tokenId) return <></>;
   if (props.myWizard?.house === props.otherWizard.house && props.otherWizard.stunned === true)
-    return <SpellButton onClick={() => console.log("rennervate")} spellType="restore" text="Re-enovate" />;
+    return (
+      <SpellButton
+        onClick={() => rennervateWrite({ functionName: "rennervate", args: [BigInt(props.otherWizard.tokenId)] })}
+        spellType="restore"
+        text="Re-enovate"
+      />
+    );
 
   if (props.myWizard?.house !== props.otherWizard.house && props.otherWizard.stunned === false)
-    return <SpellButton onClick={() => console.log("stupefy")} spellType="attack" text="Stupify" />;
+    return (
+      <SpellButton
+        onClick={() => stupefyWrite({ functionName: "stupefy", args: [BigInt(props.otherWizard.tokenId)] })}
+        spellType="attack"
+        text="Stupify"
+      />
+    );
 
   return <></>;
 };

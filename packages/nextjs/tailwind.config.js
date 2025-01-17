@@ -119,6 +119,9 @@ export default withAccountKitUi({
           silver: "#5D5D5D",
         },
       },
+      cursor: {
+        "sorting-hat": 'url("/sorting-hat-cursor.png"), pointer',
+      },
     },
   },
   safelist: [

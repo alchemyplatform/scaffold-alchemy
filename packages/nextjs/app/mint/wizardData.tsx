@@ -8,13 +8,15 @@ export const wizardData = [
     image: "/hufflepuff.jpg",
     color: "bg-hufflepuff-yellow",
     secondaryColor: "bg-hufflepuff-black",
+    symbol: "🦡",
   },
   {
     name: "Ravenclaw",
     description: "Pretentious",
-    image: "/ravenclaw.png",
+    image: "/ravenclaw.jpg",
     color: "bg-ravenclaw-blue",
     secondaryColor: "bg-ravenclaw-bronze",
+    symbol: "🦅",
   },
   {
     name: "Gryffindor",
@@ -22,6 +24,7 @@ export const wizardData = [
     image: "/gryffindor.jpg",
     color: "bg-gryffindor-red",
     secondaryColor: "bg-gryffindor-gold",
+    symbol: "🦁",
   },
   {
     name: "Slytherin",
@@ -29,6 +32,7 @@ export const wizardData = [
     image: "/slytherin.jpg",
     color: "bg-slytherin-green",
     secondaryColor: "bg-slytherin-silver",
+    symbol: "🐍",
   },
 ] as const;
 
