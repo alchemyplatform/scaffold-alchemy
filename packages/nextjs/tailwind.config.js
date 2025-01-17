@@ -2,12 +2,14 @@ import { withAccountKitUi } from "@account-kit/react/tailwind";
 
 /** @type {import('tailwindcss').Config} */
 export default withAccountKitUi({
-  content: ["./app/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}", "./utils/**/*.{js,ts,jsx,tsx}"],
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  content: [
+    "./app/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+    "./utils/**/*.{js,ts,jsx,tsx}",
+  ],
   plugins: [require("daisyui")],
   darkTheme: "dark",
   darkMode: ["selector", "[data-theme='dark']"],
-  // DaisyUI theme colors
   daisyui: {
     themes: [
       {
@@ -84,6 +86,12 @@ export default withAccountKitUi({
       },
       animation: {
         "pulse-fast": "pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+      },
+      colors: {
+        hufflepuff: "#F1C40F", // Yellow for Hufflepuff
+        gryffindor: "#C0392B",  // Red for Gryffindor
+        ravenclaw: "#2980B9",   // Blue for Ravenclaw
+        slytherin: "#27AE60",   // Green for Slytherin
       },
     },
   },
