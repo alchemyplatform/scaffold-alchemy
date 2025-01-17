@@ -16,7 +16,7 @@ const wizardData = [
     color: "bg-hufflepuff",
     symbol: "🦡",
   },
-  { name: "Ravenclaw", description: "Pretentious", image: "/ravenclaw.png", color: "bg-ravenclaw", symbol: "🦅" },
+  { name: "Ravenclaw", description: "Pretentious", image: "/ravenclaw.jpg", color: "bg-ravenclaw", symbol: "🦅" },
   { name: "Slytherin", description: "Goth", image: "/slytherin.jpg", color: "bg-slytherin", symbol: "🐍" },
 ];
 
