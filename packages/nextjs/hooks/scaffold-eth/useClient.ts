@@ -13,5 +13,5 @@ export const useClient = (
   });
   const enhancedApiDecorator = alchemyEnhancedApiActions(alchemy);
   const { client, address } = useSmartAccountClient(config);
-  return { client: client?.extend(enhancedApiDecorator), address };
+  return { client: client?.extend(enhancedApiDecorator), origClient: client, address };
 };
