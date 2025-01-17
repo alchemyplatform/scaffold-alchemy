@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import type { NextPage } from "next";
+import { parseEther } from "viem";
 import { Address } from "~~/components/scaffold-eth";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { useClient } from "~~/hooks/scaffold-eth/useClient";
-
-//import { useScaffoldWriteContract} from "~~/hooks/scaffold-eth";
 
 // Wizard data (name, description, image)
 const wizardData = [
@@ -23,9 +23,7 @@ const MintWizards: NextPage = () => {
   const [mintedWizards, setMintedWizards] = useState<any[]>([]); // Track the list of minted wizards (NFTs owned by user)
   const MINT_CONTRACT_ADDRESS = "ohyea"; // Replace this with your actual contract address
   // contract interaction
-  // const { writeContractAsync, isMining } = useScaffoldWriteContract({
-  //   contractName: "WizardContract", // The name of the contract (you can adjust this)
-  // });
+  const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract({ contractName: "YourContract" });
 
   useEffect(() => {
     if (!client || !address) return;
@@ -59,10 +57,16 @@ const MintWizards: NextPage = () => {
   const mint = async (wizardType: number) => {
     if (hasMinted) {
       // smart contract here or something
-      // const result = await writeContractAsync({
-      //   functionName: "mintWizard", // Contract function for minting
-      //   args: [wizardType.toString()], // Passing wizard name as an argument
-      // });
+      try {
+        await writeYourContractAsync({
+          functionName: "setGreeting",
+          args: ["The value to set"],
+          value: parseEther(wizardType.toString()),
+        });
+      } catch (e) {
+        console.error("Error minting wizard:", e);
+      }
+
       alert("You have already minted a wizard!"); // Prevent minting if already minted
       return; // Stop further execution
     }
