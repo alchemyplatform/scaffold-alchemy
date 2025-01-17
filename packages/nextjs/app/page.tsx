@@ -116,17 +116,8 @@ const Home: NextPage = () => {
     if (!client) return;
     if (!address) return;
     if (!sendUserOperationAsync) return;
-    /* 
-        {
-      wizards: [
-        { id: '0', name: 'dan', house: '0', stunnedStatus: false },
-        { id: '1', name: 'BluJade', house: '0', stunnedStatus: false }
-      ]
-    }*/
-    // await client.request(query);
 
     const promiseNfts = graphQlClient.request(query).then(({ wizards }: any) => {
-      debugger;
       return wizards.reduce(
         (acc: WizardsInHouses, wizard: any) => {
           const house = fromHouseNumber(Number(wizard.house));
@@ -147,13 +138,11 @@ const Home: NextPage = () => {
         },
       );
     });
-    debugger;
     const promiseMyNfts = client.nft.getNftsForOwner(address, {
       pageSize: 1,
+      contractAddresses: [CONTRACT_ADDRESS],
     });
     const promiseMyWizard = promiseMyNfts.then(async ({ ownedNfts }): Promise<WizardInfo | null> => {
-      debugger;
-
       if (!ownedNfts.length) return null;
       const [nft] = ownedNfts;
 
@@ -167,7 +156,6 @@ const Home: NextPage = () => {
       setWizards(settingWizards);
       setMyWizard(settingMyWizard);
       console.log({ myNfts });
-      debugger;
     })();
   }, [hasSendUserOperationAsync, hasClient, address]);
 
@@ -224,7 +212,7 @@ async function fetchNftData(client: Client, nft: Nft): Promise<WizardInfo> {
     args: [BigInt(nft.tokenId)],
   });
   return {
-    imageUrl: nft.image.cachedUrl || "/notFound",
+    imageUrl: urlFromHouseNumber(house),
     house: fromHouseNumber(house),
     name,
     stunned,
