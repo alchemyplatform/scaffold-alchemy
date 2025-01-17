@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactElement, useEffect, useState } from "react";
+import { wizardData } from "./mint/page";
 import type { NextPage } from "next";
 import { Address } from "~~/components/scaffold-eth";
 import deployedContracts from "~~/contracts/deployedContracts";
@@ -92,6 +93,18 @@ const Home: NextPage = () => {
   return (
     <div className="flex justify-center items-center">
       <div>
+        <div className="flex space-x-4">
+          {wizardData.map((wizard, index) => (
+            <div key={index} className="flex flex-col items-center">
+              <div className={`p-4 text-white rounded-lg hover:bg-opacity-75 disabled:opacity-50 ${wizard.color}`}>
+                <img src={wizard.image} alt={wizard.name} className="w-32 h-32 object-cover rounded-full mb-2" />
+                <p>{wizard.name}</p>
+                <p>Points - {5}</p>
+                <p>Frozen - {7}</p>
+              </div>
+            </div>
+          ))}
+        </div>
         <p className="my-2 font-medium">Connected Address:</p>
         <Address address={address} />
         <>{...nfts}</>

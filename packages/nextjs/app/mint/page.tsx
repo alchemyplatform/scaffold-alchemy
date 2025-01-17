@@ -8,12 +8,12 @@ import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { useClient } from "~~/hooks/scaffold-eth/useClient";
 
 // Wizard data (name, description, image)
-const wizardData = [
+export const wizardData = [
   { name: "Hufflepuff", description: "Not a main character", image: "/hufflepuff.jpg", color: "bg-hufflepuff" },
   { name: "Ravenclaw", description: "Pretentious", image: "/ravenclaw.png", color: "bg-ravenclaw" },
   { name: "Gryffindor", description: "Not Slytherin", image: "/gryffindor.jpg", color: "bg-gryffindor" },
   { name: "Slytherin", description: "Goth", image: "/slytherin.jpg", color: "bg-slytherin" },
-];
+] as const;
 
 const MintWizards: NextPage = () => {
   const { address, client } = useClient();
