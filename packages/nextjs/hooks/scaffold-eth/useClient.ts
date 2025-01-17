@@ -16,3 +16,5 @@ export const useClient = (
   const { client, address } = useSmartAccountClient(config);
   return { client: client?.extend(enhancedApiDecorator), origClient: client, address };
 };
+
+export type Client = ReturnType<typeof useClient>["client"];

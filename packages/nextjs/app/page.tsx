@@ -1,16 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Wizard } from "./Wizard";
-import { WizardSpell } from "./WizardSpell";
 import { WizardData, wizardData } from "./mint/wizardData";
 import { useSendUserOperation } from "@account-kit/react";
 import { Nft } from "alchemy-sdk";
 import { GraphQLClient } from "graphql-request";
 import { NextPage } from "next";
-import { Address } from "~~/components/scaffold-eth";
+import { WizardCard } from "~~/components/wizard/WizardCard";
 import deployedContracts from "~~/contracts/deployedContracts";
-import { useClient } from "~~/hooks/scaffold-eth/useClient";
+import { Client, useClient } from "~~/hooks/scaffold-eth/useClient";
 
 const endpoint =
   "https://subgraph.satsuma-prod.com/e2e92ecdbb00/alchemy-internal/hogwarts-tournament/version/v0.0.1-new-version/api";
@@ -43,7 +41,6 @@ export type CurrentWizardProps = {
   myWizard: WizardInfo | null;
   otherWizard: WizardInfo;
 };
-export type Client = ReturnType<typeof useClient>["client"];
 
 const keys = Object.keys as <T>(o: T) => (keyof T)[];
 
@@ -73,18 +70,6 @@ const urlFromHouseNumber = (house: number): string => {
   }
   throw new Error(`Invalid house number: ${house}`);
 };
-// const toHouseNumber = (house: House): number => {
-//   switch (house) {
-//     case "Hufflepuff":
-//       return 0;
-//     case "Ravenclaw":
-//       return 1;
-//     case "Gryffindor":
-//       return 2;
-//     case "Slytherin":
-//       return 3;
-//   }
-// };
 
 const hogwartsTournamentAbi = deployedContracts[421614].HogwartsTournament.abi;
 const Home: NextPage = () => {
@@ -164,39 +149,161 @@ const Home: NextPage = () => {
   return (
     <div className="flex justify-center items-center">
       <div>
-        <div className="flex space-x-4">
+        <h1 className="text-4xl font-bold text-center mb-6 mt-8 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+          House Points
+        </h1>
+        <div className="flex space-x-8 p-8">
           {wizardData.map((wizard, index) => (
             <div key={index} className="flex flex-col items-center">
-              <div className={`p-4 text-white rounded-lg hover:bg-opacity-75 disabled:opacity-50 ${wizard.color}`}>
-                <img src={wizard.image} alt={wizard.name} className="w-32 h-32 object-cover rounded-full mb-2" />
-                <p>{wizard.name}</p>
-                <p>Points - {points[wizard.name].points}</p>
-                <p>Frozen - {points[wizard.name].frozen}</p>
+              <div
+                className={`
+                  p-6 text-white rounded-xl 
+                  hover:scale-105 transition-all duration-300 ease-in-out
+                  shadow-xl hover:shadow-2xl
+                  bg-gradient-to-br from-${wizard.color.replace("bg-", "")} to-${wizard.secondaryColor.replace("bg-", "")}
+                `}
+              >
+                <img
+                  src={wizard.image}
+                  alt={wizard.name}
+                  className="w-40 h-40 object-cover rounded-full mb-4 border-4 border-white/20 shadow-lg"
+                />
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-bold mb-3">{wizard.name}</h2>
+                  <div className="space-y-1">
+                    <p className="text-white/90">
+                      Points: <span className="font-semibold">{points[wizard.name].points}</span>
+                    </p>
+                    <p className="text-white/90">
+                      Frozen: <span className="font-semibold">{points[wizard.name].frozen}</span>
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
         </div>
-        <p className="my-2 font-medium">Connected Address:</p>
-        <Address address={address} />
-        {myWizard && <Wizard {...myWizard} />}
-        <>
+
+        {/* My Wizard Section */}
+        {myWizard ? (
+          <div className="mt-16 mb-20">
+            {/* Decorative elements */}
+            <div className="flex items-center justify-center mb-8">
+              <div className="h-px w-24 bg-gradient-to-r from-transparent via-amber-500/50 to-transparent"></div>
+              <img src="/magicWand.jpg" alt="Wand" className="h-8 mx-4 opacity-70" />
+              <h2 className="text-4xl font-bold text-center px-4 bg-gradient-to-r from-amber-500 to-yellow-500 bg-clip-text text-transparent">
+                My Wizard
+              </h2>
+              <img src="/magicWand.jpg" alt="Wand" className="h-8 mx-4 opacity-70 transform scale-x-[-1]" />
+              <div className="h-px w-24 bg-gradient-to-r from-transparent via-amber-500/50 to-transparent"></div>
+            </div>
+
+            {/* Card container with magical effects */}
+            <div className="relative max-w-md mx-auto">
+              {/* Animated glow effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-xl opacity-20 blur-xl animate-pulse"></div>
+
+              {/* Star sparkles */}
+              {[...Array(12)].map((_, i) => (
+                <div
+                  key={i}
+                  className="star-sparkle absolute w-1 h-1"
+                  style={{
+                    top: `${Math.random() * 100}%`,
+                    left: `${Math.random() * 100}%`,
+                    animationDelay: `${Math.random() * 2}s`,
+                    opacity: Math.random() * 0.7 + 0.3,
+                  }}
+                >
+                  <svg
+                    className="w-full h-full animate-twinkle"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    style={{ color: "#ffd700" }}
+                  >
+                    <path d="M12 2L9.1 9.1H2L7.5 13.9L5.7 21L12 16.9L18.3 21L16.5 13.9L22 9.1H14.9L12 2Z" />
+                  </svg>
+                </div>
+              ))}
+
+              {/* Magical floating particles */}
+              <div className="absolute -inset-2 flex justify-around">
+                {[...Array(8)].map((_, i) => (
+                  <div
+                    key={i}
+                    className={`
+                      w-1.5 h-1.5 rounded-full
+                      bg-gradient-to-br from-amber-300 to-yellow-500
+                      animate-float opacity-70
+                    `}
+                    style={{
+                      animationDelay: `${i * 0.3}s`,
+                      left: `${i * 15}%`,
+                      top: `${Math.sin(i) * 20}%`,
+                    }}
+                  ></div>
+                ))}
+              </div>
+
+              {/* Wizard Card */}
+              <div className="relative backdrop-blur-sm">
+                <WizardCard
+                  wizard={myWizard}
+                  houseData={wizardData.find(w => w.name === myWizard.house)!}
+                  client={client}
+                  myWizard={myWizard}
+                />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-16 mb-20 text-center">
+            <div className="flex items-center justify-center mb-8">
+              <div className="h-px w-24 bg-gradient-to-r from-transparent via-gray-500/50 to-transparent"></div>
+              <img src="/sorting-hat.png" alt="Sorting Hat" className="h-10 mx-4 opacity-70" />
+              <h2 className="text-4xl font-bold text-center px-4 bg-gradient-to-r from-gray-600 to-gray-400 bg-clip-text text-transparent">
+                No Wizard Yet
+              </h2>
+              <img src="/sorting-hat.png" alt="Sorting Hat" className="h-10 mx-4 opacity-70 transform scale-x-[-1]" />
+              <div className="h-px w-24 bg-gradient-to-r from-transparent via-gray-500/50 to-transparent"></div>
+            </div>
+            <p className="text-gray-500 text-lg">
+              The Sorting Hat awaits! Mint a wizard to join the Hogwarts Tournament.
+            </p>
+          </div>
+        )}
+
+        <div className="mt-12 space-y-8">
           {keys(wizards).map(house => {
             const wizardNfts = wizards[house as House];
+            const houseData = wizardData.find(w => w.name === house);
+            if (!houseData) return null;
+
             return (
-              <div key={house}>
-                <h1>{house}</h1>
-                <div className="flex space-x-4">
+              <div key={house} className="rounded-xl p-6 bg-base-200 shadow-xl">
+                <h2
+                  className={`text-2xl font-bold mb-4 pb-2 border-b-2 bg-gradient-to-r from-${houseData.color.replace("bg-", "")} to-${houseData.secondaryColor.replace("bg-", "")} bg-clip-text text-transparent`}
+                >
+                  {house} House
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {wizardNfts.map(wizard => (
-                    <div key={wizard.tokenId} className="flex flex-col items-center">
-                      <Wizard {...wizard} />
-                      <WizardSpell client={client} myWizard={myWizard} otherWizard={wizard} />
-                    </div>
+                    <WizardCard
+                      key={wizard.tokenId}
+                      wizard={wizard}
+                      houseData={houseData}
+                      client={client}
+                      myWizard={myWizard}
+                    />
                   ))}
                 </div>
+                {wizardNfts.length === 0 && (
+                  <p className="text-center text-gray-500 py-4">No wizards in this house yet</p>
+                )}
               </div>
             );
           })}
-        </>
+        </div>
       </div>
     </div>
   );
