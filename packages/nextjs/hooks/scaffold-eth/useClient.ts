@@ -1,6 +1,6 @@
 import { alchemyEnhancedApiActions } from "@account-kit/infra";
 import { UseSmartAccountClientProps, useSmartAccountClient } from "@account-kit/react";
-import { Alchemy } from "alchemy-sdk";
+import { Alchemy, Network } from "alchemy-sdk";
 import { apiKey } from "~~/config";
 
 export const useClient = (
@@ -10,8 +10,9 @@ export const useClient = (
 ) => {
   const alchemy = new Alchemy({
     apiKey,
+    network: Network.ARB_SEPOLIA,
   });
   const enhancedApiDecorator = alchemyEnhancedApiActions(alchemy);
   const { client, address } = useSmartAccountClient(config);
-  return { client: client?.extend(enhancedApiDecorator), address };
+  return { client: client?.extend(enhancedApiDecorator), origClient: client, address };
 };

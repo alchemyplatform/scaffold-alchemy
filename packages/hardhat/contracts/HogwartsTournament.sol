@@ -141,4 +141,19 @@ contract HogwartsTournament is ERC721, ERC721URIStorage, Ownable {
         require(_ownerOf(tokenId) != address(0), "Token does not exist");
         return wizardNames[tokenId];
     }
+
+    struct WizardStatus {
+        HogwartsHouse house;
+        bool stunned;
+        string name;
+    }
+
+    function getWizardStatus(uint256 tokenId) public view returns (WizardStatus memory) {
+        require(_ownerOf(tokenId) != address(0), "Token does not exist");
+        return WizardStatus(
+            tokenHouse[tokenId],
+            isStunned[tokenId],
+            wizardNames[tokenId]
+        );
+    }
 }

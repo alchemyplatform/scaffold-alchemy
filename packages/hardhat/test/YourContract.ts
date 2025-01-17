@@ -142,5 +142,17 @@ describe("HogwartsTournament", function () {
 
       await expect(hogwartsTournament.getTokenHouse(99)).to.be.revertedWith("Token does not exist");
     });
+
+    it("Should return correct wizard status object", async function () {
+      // First stun the wizard to test the stunned status
+      await hogwartsTournament.connect(addr2).safeMint(HogwartsHouse.Slytherin, "Draco");
+      await hogwartsTournament.connect(addr2).stupefy(0);
+
+      const status = await hogwartsTournament.getWizardStatus(0);
+
+      expect(status.house).to.equal(HogwartsHouse.Gryffindor);
+      expect(status.stunned).to.equal(true);
+      expect(status.name).to.equal("Harry Potter");
+    });
   });
 });
