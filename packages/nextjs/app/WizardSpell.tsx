@@ -3,7 +3,7 @@
 import { CurrentWizardProps } from "./page";
 
 export const WizardSpell = (props: CurrentWizardProps) => {
-  if (props.myWizard?.stunned) return <></>;
+  if (!props.myWizard?.stunned) return <></>;
   if (props.myWizard?.house === props.otherWizard.house)
     return (
       <button

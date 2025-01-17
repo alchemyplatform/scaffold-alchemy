@@ -3,7 +3,7 @@
 import { WizardInfo } from "./page";
 
 export function Wizard(props: WizardInfo): any {
-  if (props.stunned) {
+  if (!props.stunned) {
     return (
       <div key="harryPotter" style={{ height: "20rem", width: "15rem" }}>
         <img src="/frame1.jpg" alt="frame" style={{ height: "20rem", width: "15rem", maxWidth: "none" }} />

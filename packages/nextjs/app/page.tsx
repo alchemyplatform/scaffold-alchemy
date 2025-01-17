@@ -6,10 +6,27 @@ import { WizardSpell } from "./WizardSpell";
 import { WizardData, wizardData } from "./mint/wizardData";
 import { useSendUserOperation } from "@account-kit/react";
 import { Nft } from "alchemy-sdk";
+import { GraphQLClient } from "graphql-request";
 import { NextPage } from "next";
 import { Address } from "~~/components/scaffold-eth";
 import deployedContracts from "~~/contracts/deployedContracts";
 import { useClient } from "~~/hooks/scaffold-eth/useClient";
+
+const endpoint =
+  "https://subgraph.satsuma-prod.com/e2e92ecdbb00/alchemy-internal/hogwarts-tournament/version/v0.0.1-new-version/api";
+
+const graphQlClient = new GraphQLClient(endpoint);
+
+const query = `
+  {
+    wizards {
+      id
+      name 
+      house
+      stunnedStatus
+    }
+  }
+`;
 
 export const CONTRACT_ADDRESS = deployedContracts[421614].HogwartsTournament.address;
 
@@ -33,13 +50,26 @@ const keys = Object.keys as <T>(o: T) => (keyof T)[];
 const fromHouseNumber = (house: number): House => {
   switch (house) {
     case 0:
-      return "Hufflepuff";
-    case 1:
-      return "Ravenclaw";
-    case 2:
       return "Gryffindor";
+    case 1:
+      return "Hufflepuff";
+    case 2:
+      return "Ravenclaw";
     case 3:
       return "Slytherin";
+  }
+  throw new Error(`Invalid house number: ${house}`);
+};
+const urlFromHouseNumber = (house: number): string => {
+  switch (house) {
+    case 0:
+      return "/gryffindor.jpg";
+    case 1:
+      return "/hufflepuff.jpg";
+    case 2:
+      return "/ravenclaw.jpg";
+    case 3:
+      return "/slytherin.jpg";
   }
   throw new Error(`Invalid house number: ${house}`);
 };
@@ -86,43 +116,56 @@ const Home: NextPage = () => {
     if (!client) return;
     if (!address) return;
     if (!sendUserOperationAsync) return;
-    debugger;
-    const promiseNfts = client.nft
-      .getNftsForContract(deployedContracts[421614].HogwartsTournament.address)
-      .then(async ({ nfts }) => {
-        return await Promise.all(nfts.map(nft => fetchNftData(client, nft)));
-      })
-      .then(wizards =>
-        wizards.reduce<WizardsInHouses>(
-          (acc, wizard) => {
-            acc[wizard.house].push(wizard);
-            return acc;
-          },
-          {
-            Hufflepuff: [],
-            Ravenclaw: [],
-            Gryffindor: [],
-            Slytherin: [],
-          },
-        ),
+    /* 
+        {
+      wizards: [
+        { id: '0', name: 'dan', house: '0', stunnedStatus: false },
+        { id: '1', name: 'BluJade', house: '0', stunnedStatus: false }
+      ]
+    }*/
+    // await client.request(query);
+
+    const promiseNfts = graphQlClient.request(query).then(({ wizards }: any) => {
+      debugger;
+      return wizards.reduce(
+        (acc: WizardsInHouses, wizard: any) => {
+          const house = fromHouseNumber(Number(wizard.house));
+          acc[house].push({
+            imageUrl: urlFromHouseNumber(Number(wizard.house)),
+            name: String(wizard.name),
+            stunned: !!wizard.stunnedStatus,
+            tokenId: String(wizard.id),
+            house,
+          });
+          return acc;
+        },
+        {
+          Hufflepuff: [],
+          Ravenclaw: [],
+          Gryffindor: [],
+          Slytherin: [],
+        },
       );
+    });
+    debugger;
     const promiseMyNfts = client.nft.getNftsForOwner(address, {
-      contractAddresses: [deployedContracts[421614].HogwartsTournament.address],
       pageSize: 1,
     });
     const promiseMyWizard = promiseMyNfts.then(async ({ ownedNfts }): Promise<WizardInfo | null> => {
+      debugger;
+
       if (!ownedNfts.length) return null;
       const [nft] = ownedNfts;
-
-      debugger;
 
       return await fetchNftData(client, nft);
     });
 
     (async () => {
-      setWizards(await promiseNfts);
+      const settingWizards = await promiseNfts;
+      const settingMyWizard = await promiseMyWizard;
       const myNfts = await promiseMyNfts;
-      setMyWizard(await promiseMyWizard);
+      setWizards(settingWizards);
+      setMyWizard(settingMyWizard);
       console.log({ myNfts });
       debugger;
     })();
