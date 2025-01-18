@@ -30,3 +30,19 @@ p {
 .btn.btn-ghost {
   @apply shadow-none;
 }
+
+.star-sparkle {
+  pointer-events: none;
+  transform-origin: center;
+  z-index: 10;
+}
+
+@keyframes float-random {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(var(--tx), var(--ty)) rotate(var(--r));
+  }
+}

@@ -2,11 +2,7 @@ import { withAccountKitUi } from "@account-kit/react/tailwind";
 
 /** @type {import('tailwindcss').Config} */
 export default withAccountKitUi({
-  content: [
-    "./app/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
-    "./utils/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./app/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}", "./utils/**/*.{js,ts,jsx,tsx}"],
   plugins: [require("daisyui")],
   darkTheme: "dark",
   darkMode: ["selector", "[data-theme='dark']"],
@@ -86,13 +82,62 @@ export default withAccountKitUi({
       },
       animation: {
         "pulse-fast": "pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        float: "float 3s ease-in-out infinite",
+        twinkle: "twinkle 3s ease-in-out infinite",
+      },
+      keyframes: {
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        twinkle: {
+          "0%, 100%": {
+            transform: "scale(0.5) rotate(0deg)",
+            opacity: 0.3,
+          },
+          "50%": {
+            transform: "scale(1.2) rotate(180deg)",
+            opacity: 1,
+          },
+        },
       },
       colors: {
-        hufflepuff: "#F1C40F", // Yellow for Hufflepuff
-        gryffindor: "#C0392B",  // Red for Gryffindor
-        ravenclaw: "#2980B9",   // Blue for Ravenclaw
-        slytherin: "#27AE60",   // Green for Slytherin
+        hufflepuff: {
+          yellow: "#FFD800",
+          black: "#000000",
+        },
+        ravenclaw: {
+          blue: "#0E1A40",
+          bronze: "#946B2D",
+        },
+        gryffindor: {
+          red: "#740001",
+          gold: "#D3A625",
+        },
+        slytherin: {
+          green: "#1A472A",
+          silver: "#5D5D5D",
+        },
+      },
+      cursor: {
+        "sorting-hat": 'url("/sorting-hat-cursor.png"), pointer',
       },
     },
   },
+  safelist: [
+    "from-hufflepuff-yellow",
+    "to-hufflepuff-black",
+    "from-ravenclaw-blue",
+    "to-ravenclaw-bronze",
+    "from-gryffindor-red",
+    "to-gryffindor-gold",
+    "from-slytherin-green",
+    "to-slytherin-silver",
+    "bg-gradient-to-br",
+    "animation-delay-500",
+    "animation-delay-1000",
+    "animate-float",
+    "animate-twinkle",
+    "backdrop-blur-sm",
+  ],
 });
