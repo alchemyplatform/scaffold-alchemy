@@ -1,10 +1,3 @@
-"use client";
-
-import { keys } from "~~/utils/keys";
-import { values } from "~~/utils/values";
-
-// Wizard data (name, description, image)
-
 export const wizardData = {
   Hufflepuff: {
     houseName: "Hufflepuff",
@@ -43,9 +36,3 @@ export const wizardData = {
     houseNumber: 3,
   },
 } as const;
-
-export const wizardValues = values(wizardData);
-export const wizardKeys = keys(wizardData);
-export type WizardHouse = (typeof wizardKeys)[number];
-
-export type WizardData = (typeof wizardData)[keyof typeof wizardData];

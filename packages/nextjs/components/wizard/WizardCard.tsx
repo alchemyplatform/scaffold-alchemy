@@ -1,8 +1,7 @@
-import { Wizard } from "~~/app/Wizard";
-import { WizardSpell } from "~~/app/WizardSpell";
-import { WizardData } from "~~/app/mint/wizardData";
-import { WizardInfo } from "~~/app/page";
+import { Wizard } from "~~/components/wizard/Wizard";
+import { WizardSpell } from "~~/components/wizard/WizardSpell";
 import { Client } from "~~/hooks/scaffold-eth/useClient";
+import { WizardData, WizardInfo } from "~~/types/hogwarts/hogwartsTypes";
 
 interface WizardCardProps {
   onChange: () => void;

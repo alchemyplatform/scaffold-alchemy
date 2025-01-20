@@ -2,6 +2,7 @@
 import { alchemy, arbitrumSepolia } from "@account-kit/infra";
 import { AuthType, cookieStorage, createConfig } from "@account-kit/react";
 import { QueryClient } from "@tanstack/react-query";
+import deployedContracts from "~~/contracts/deployedContracts";
 
 if (!process.env.NEXT_PUBLIC_ALCHEMY_API_KEY) {
   throw new Error(
@@ -42,3 +43,10 @@ export const config = createConfig(
 );
 
 export const queryClient = new QueryClient();
+
+export const subgraphEndpoint =
+  "https://subgraph.satsuma-prod.com/e2e92ecdbb00/alchemy-internal/hogwarts-tournament/version/v0.0.1-new-version/api";
+
+export const CONTRACT_ABI = deployedContracts[421614].HogwartsTournament.abi;
+
+export const CONTRACT_ADDRESS = deployedContracts[421614].HogwartsTournament.address;
