@@ -1,15 +1,17 @@
 import { headers } from "next/headers";
-import { Providers } from "./providers";
+import { Providers } from "../providers/providers";
 import { cookieToInitialState } from "@account-kit/core";
 import "@rainbow-me/rainbowkit/styles.css";
 import { config } from "~~/config";
 import "~~/styles/globals.css";
-import { getMetadata } from "~~/utils/scaffold-eth/getMetadata";
 
-export const metadata = getMetadata({
-  title: "Scaffold-ETH 2 App",
-  description: "Built with 🏗 Scaffold-ETH 2",
-});
+export const metadata = {
+  title: "Hogwarts Tournament",
+  description: "Your magical journey begins here",
+  icons: {
+    icon: "/sorting-hat.png", // favicon
+  },
+};
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
   // This will allow us to persist state across page boundaries (read more here: https://accountkit.alchemy.com/react/ssr#persisting-the-account-state)
@@ -17,6 +19,11 @@ const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <html suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/sorting-hat.png" />
+        <link rel="apple-touch-icon" href="/sorting-hat.png" />
+        <link rel="shortcut icon" href="/sorting-hat.png" />
+      </head>
       <body>
         <Providers initialState={initialState}>{children}</Providers>
       </body>

@@ -1,11 +1,13 @@
 "use client";
 
 import { SetStateAction, useEffect, useState } from "react";
-import { WizardHouse, wizardData, wizardValues } from "./wizardData";
+import Image from "next/image";
 import type { NextPage } from "next";
 import { Address } from "~~/components/scaffold-eth";
+import { wizardData } from "~~/components/wizard/wizardData";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { useClient } from "~~/hooks/scaffold-eth/useClient";
+import { WizardHouse, wizardValues } from "~~/types/hogwarts/hogwartsTypes";
 
 const MintWizards: NextPage = () => {
   const { address } = useClient();
@@ -40,10 +42,13 @@ const MintWizards: NextPage = () => {
     <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-b from-gray-900 via-purple-900 to-gray-900 p-8">
       <div className="max-w-4xl w-full bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-[0_0_15px_rgba(147,51,234,0.3)] border border-purple-500/20 p-8">
         <div className="flex flex-col items-center mb-8">
-          <img
-            src="/sorting-hat.jpg"
+          <Image
+            src="/sorting-hat.png"
             alt="Sorting Hat"
-            className="w-48 h-auto rounded-xl shadow-[0_0_25px_rgba(147,51,234,0.4)] mb-4 hover:scale-105 transition-transform duration-300"
+            width={192}
+            height={192}
+            className="rounded-xl shadow-[0_0_25px_rgba(147,51,234,0.4)] mb-4 hover:scale-105 transition-transform duration-300"
+            priority
           />
           <h1 className="text-4xl font-bold mt-4 text-center bg-gradient-to-r from-purple-500 via-fuchsia-500 to-purple-500 bg-clip-text text-transparent animate-pulse">
             Choose Your Wizard
@@ -76,10 +81,12 @@ const MintWizards: NextPage = () => {
                 <div className="group hover:transform hover:scale-105 transition-all duration-300 cursor-sorting-hat h-full w-full">
                   <div className="bg-gray-900/70 rounded-2xl p-6 shadow-[0_0_15px_rgba(147,51,234,0.2)] hover:shadow-[0_0_20px_rgba(147,51,234,0.4)] transition-all border border-purple-500/20 h-full flex flex-col">
                     <div className="flex-grow flex flex-col items-center">
-                      <img
+                      <Image
                         src={wizard.image}
                         alt={wizard.houseName}
-                        className="w-40 h-40 object-cover rounded-xl mb-4 hover:opacity-90 transition-opacity shadow-lg"
+                        width={160}
+                        height={160}
+                        className="object-cover rounded-xl mb-4 hover:opacity-90 transition-opacity shadow-lg"
                       />
                       <h3 className="text-xl font-bold text-center mb-2 text-purple-200 group-hover:text-purple-400 transition-colors">
                         {wizard.houseName}
