@@ -1,7 +1,7 @@
 "use client";
 
-import { CurrentWizardProps } from "./page";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { CurrentWizardProps } from "~~/types/hogwarts/hogwartsTypes";
 
 interface SpellButtonProps {
   onClick: () => void;
