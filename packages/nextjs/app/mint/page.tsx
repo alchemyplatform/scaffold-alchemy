@@ -1,7 +1,7 @@
 "use client";
 
 import { SetStateAction, useEffect, useState } from "react";
-import { wizardData } from "./wizardData";
+import { WizardHouse, wizardData, wizardValues } from "./wizardData";
 import type { NextPage } from "next";
 import { Address } from "~~/components/scaffold-eth";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
@@ -9,7 +9,7 @@ import { useClient } from "~~/hooks/scaffold-eth/useClient";
 
 const MintWizards: NextPage = () => {
   const { address } = useClient();
-  const [selectedWizard, setSelectedWizard] = useState<number | null>(null);
+  const [selectedWizard, setSelectedWizard] = useState<WizardHouse | null>(null);
   const [hasMinted, setHasMinted] = useState<boolean>(false); // Track if the user has minted a wizard
   // contract interaction
   const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract({
@@ -70,19 +70,19 @@ const MintWizards: NextPage = () => {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {wizardData.map((wizard, index) => (
-            <div key={index} className="flex flex-col items-center h-full">
+          {wizardValues.map(wizard => (
+            <div key={wizard.houseNumber} className="flex flex-col items-center h-full">
               {selectedWizard === null && !hasMinted && (
                 <div className="group hover:transform hover:scale-105 transition-all duration-300 cursor-sorting-hat h-full w-full">
                   <div className="bg-gray-900/70 rounded-2xl p-6 shadow-[0_0_15px_rgba(147,51,234,0.2)] hover:shadow-[0_0_20px_rgba(147,51,234,0.4)] transition-all border border-purple-500/20 h-full flex flex-col">
                     <div className="flex-grow flex flex-col items-center">
                       <img
                         src={wizard.image}
-                        alt={wizard.name}
+                        alt={wizard.houseName}
                         className="w-40 h-40 object-cover rounded-xl mb-4 hover:opacity-90 transition-opacity shadow-lg"
                       />
                       <h3 className="text-xl font-bold text-center mb-2 text-purple-200 group-hover:text-purple-400 transition-colors">
-                        {wizard.name}
+                        {wizard.houseName}
                       </h3>
                       <p className="text-center text-sm italic text-purple-300/70 mb-4">{wizard.description}</p>
                     </div>
@@ -91,9 +91,9 @@ const MintWizards: NextPage = () => {
                         try {
                           await writeYourContractAsync({
                             functionName: "safeMint",
-                            args: [index, wizardName],
+                            args: [wizard.houseNumber, wizardName],
                           });
-                          setSelectedWizard(index);
+                          setSelectedWizard(wizard.houseName);
                           setHasMinted(true);
                         } catch (e) {
                           console.error("Error setting greeting:", e);
@@ -116,7 +116,7 @@ const MintWizards: NextPage = () => {
         {selectedWizard !== null && hasMinted && (
           <div className="mt-8 text-center bg-purple-900/20 border border-purple-500/20 p-6 rounded-xl shadow-[0_0_15px_rgba(147,51,234,0.2)]">
             <p className="text-2xl font-bold text-purple-200">
-              Welcome to House {wizardData[selectedWizard].name}! {wizardData[selectedWizard].symbol}
+              Welcome to House {wizardData[selectedWizard].houseName}! {wizardData[selectedWizard].symbol}
             </p>
           </div>
         )}

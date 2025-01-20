@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { WizardData, wizardData } from "./mint/wizardData";
+import { keys } from "../utils/keys";
+import { WizardData, wizardData, wizardValues } from "./mint/wizardData";
 import { useSendUserOperation } from "@account-kit/react";
 import { Nft } from "alchemy-sdk";
 import { GraphQLClient } from "graphql-request";
@@ -29,7 +30,7 @@ const query = `
 
 export const CONTRACT_ADDRESS = deployedContracts[421614].HogwartsTournament.address;
 
-type House = WizardData["name"];
+type House = WizardData["houseName"];
 export type WizardInfo = {
   imageUrl: string;
   name: string;
@@ -44,30 +45,28 @@ export type CurrentWizardProps = {
   otherWizard: WizardInfo;
 };
 
-const keys = Object.keys as <T>(o: T) => (keyof T)[];
-
 const fromHouseNumber = (house: number): House => {
   switch (house) {
-    case 0:
+    case wizardData.Gryffindor.houseNumber:
       return "Gryffindor";
-    case 1:
+    case wizardData.Hufflepuff.houseNumber:
       return "Hufflepuff";
-    case 2:
+    case wizardData.Ravenclaw.houseNumber:
       return "Ravenclaw";
-    case 3:
+    case wizardData.Slytherin.houseNumber:
       return "Slytherin";
   }
   throw new Error(`Invalid house number: ${house}`);
 };
 const urlFromHouseNumber = (house: number): string => {
   switch (house) {
-    case 0:
+    case wizardData.Gryffindor.houseNumber:
       return "/gryffindor.jpg";
-    case 1:
+    case wizardData.Hufflepuff.houseNumber:
       return "/hufflepuff.jpg";
-    case 2:
+    case wizardData.Ravenclaw.houseNumber:
       return "/ravenclaw.jpg";
-    case 3:
+    case wizardData.Slytherin.houseNumber:
       return "/slytherin.jpg";
   }
   throw new Error(`Invalid house number: ${house}`);
@@ -150,8 +149,8 @@ const Home: NextPage = () => {
           House Points
         </h1>
         <div className="flex space-x-8 p-8">
-          {wizardData.map((wizard, index) => (
-            <div key={index} className="flex flex-col items-center">
+          {wizardValues.map(wizard => (
+            <div key={wizard.houseNumber} className="flex flex-col items-center">
               <div
                 className={`
                   p-6 text-white rounded-xl 
@@ -162,17 +161,17 @@ const Home: NextPage = () => {
               >
                 <img
                   src={wizard.image}
-                  alt={wizard.name}
+                  alt={wizard.houseName}
                   className="w-40 h-40 object-cover rounded-full mb-4 border-4 border-white/20 shadow-lg"
                 />
                 <div className="text-center space-y-2">
-                  <h2 className="text-2xl font-bold mb-3">{wizard.name}</h2>
+                  <h2 className="text-2xl font-bold mb-3">{wizard.houseName}</h2>
                   <div className="space-y-1">
                     <p className="text-white/90">
-                      Points: <span className="font-semibold">{points[wizard.name].points}</span>
+                      Points: <span className="font-semibold">{points[wizard.houseName].points}</span>
                     </p>
                     <p className="text-white/90">
-                      Frozen: <span className="font-semibold">{points[wizard.name].frozen}</span>
+                      Frozen: <span className="font-semibold">{points[wizard.houseName].frozen}</span>
                     </p>
                   </div>
                 </div>
@@ -199,7 +198,6 @@ const Home: NextPage = () => {
             <div className="relative max-w-md mx-auto">
               {/* Animated glow effect */}
               <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-xl opacity-20 blur-xl animate-pulse"></div>
-
               {/* Star sparkles */}
               {[...Array(12)].map((_, i) => (
                 <div
@@ -222,7 +220,6 @@ const Home: NextPage = () => {
                   </svg>
                 </div>
               ))}
-
               {/* Magical floating particles */}
               <div className="absolute -inset-2 flex justify-around">
                 {[...Array(8)].map((_, i) => (
@@ -241,12 +238,12 @@ const Home: NextPage = () => {
                   ></div>
                 ))}
               </div>
-
               {/* Wizard Card */}
+              test
               <div className="relative backdrop-blur-sm">
                 <WizardCard
                   wizard={myWizard}
-                  houseData={wizardData.find(w => w.name === myWizard.house)!}
+                  houseData={wizardValues.find(w => w.houseName === myWizard.house)!}
                   client={client}
                   myWizard={myWizard}
                   onChange={updateHouses}
@@ -274,7 +271,7 @@ const Home: NextPage = () => {
         <div className="mt-12 space-y-8">
           {keys(wizards).map(house => {
             const wizardNfts = wizards[house as House];
-            const houseData = wizardData.find(w => w.name === house);
+            const houseData = wizardData[house];
             if (!houseData) return null;
 
             return (
