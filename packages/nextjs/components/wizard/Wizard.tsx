@@ -18,7 +18,7 @@ export function Wizard(props: WizardInfo): any {
             alt="nft"
             width={112}
             height={149}
-            style={{ maxWidth: "none", left: "4.15rem", top: "-14.2rem" }}
+            style={{ maxWidth: "none", left: "63px", top: "-170px" }}
           />
         </div>
       </>
@@ -36,7 +36,7 @@ export function Wizard(props: WizardInfo): any {
           alt="nft"
           width={106}
           height={155}
-          style={{ maxWidth: "none", left: "4.3rem", top: "-14.5rem" }}
+          style={{ maxWidth: "none", left: "63px", top: "-170px" }}
         />
       </div>
     </>
