@@ -76,7 +76,11 @@ export const WizardSpell = (props: CurrentWizardProps) => {
   if (props.myWizard?.house === props.otherWizard.house && props.otherWizard.stunned === true)
     return (
       <SpellButton
-        onClick={() => rennervateWrite({ functionName: "rennervate", args: [BigInt(props.otherWizard.tokenId)] })}
+        onClick={() =>
+          rennervateWrite({ functionName: "rennervate", args: [BigInt(props.otherWizard.tokenId)] }).then(
+            props.onChange,
+          )
+        }
         spellType="restore"
         text="Re-enovate"
       />
@@ -85,7 +89,9 @@ export const WizardSpell = (props: CurrentWizardProps) => {
   if (props.myWizard?.house !== props.otherWizard.house && props.otherWizard.stunned === false)
     return (
       <SpellButton
-        onClick={() => stupefyWrite({ functionName: "stupefy", args: [BigInt(props.otherWizard.tokenId)] })}
+        onClick={() =>
+          stupefyWrite({ functionName: "stupefy", args: [BigInt(props.otherWizard.tokenId)] }).then(props.onChange)
+        }
         spellType="attack"
         text="Stupify"
       />

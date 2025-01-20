@@ -5,13 +5,14 @@ import { WizardInfo } from "~~/app/page";
 import { Client } from "~~/hooks/scaffold-eth/useClient";
 
 interface WizardCardProps {
+  onChange: () => void;
   wizard: WizardInfo;
   houseData: WizardData;
   client: Client;
   myWizard: WizardInfo | null;
 }
 
-export const WizardCard = ({ wizard, houseData, client, myWizard }: WizardCardProps) => {
+export const WizardCard = ({ wizard, houseData, client, myWizard, onChange }: WizardCardProps) => {
   return (
     <div
       className={`
@@ -61,7 +62,7 @@ export const WizardCard = ({ wizard, houseData, client, myWizard }: WizardCardPr
 
         {/* Spell Actions */}
         <div className="w-full pt-4 border-t border-gray-200/20">
-          <WizardSpell client={client} myWizard={myWizard} otherWizard={wizard} />
+          <WizardSpell client={client} myWizard={myWizard} otherWizard={wizard} onChange={onChange} />
         </div>
       </div>
     </div>

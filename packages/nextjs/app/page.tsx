@@ -8,6 +8,7 @@ import { GraphQLClient } from "graphql-request";
 import { NextPage } from "next";
 import { WizardCard } from "~~/components/wizard/WizardCard";
 import deployedContracts from "~~/contracts/deployedContracts";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { Client, useClient } from "~~/hooks/scaffold-eth/useClient";
 
 const endpoint =
@@ -37,6 +38,7 @@ export type WizardInfo = {
   tokenId: string;
 };
 export type CurrentWizardProps = {
+  onChange: () => void;
   client: Client | undefined;
   myWizard: WizardInfo | null;
   otherWizard: WizardInfo;
@@ -79,8 +81,28 @@ const Home: NextPage = () => {
     client: client,
     waitForTxn: true,
   });
+  const { data: gryffindorHousePoints } = useScaffoldReadContract({
+    contractName: "HogwartsTournament",
+    functionName: "getHousePoints",
+    args: [0],
+  });
+  const { data: hufflepuffHousePoints } = useScaffoldReadContract({
+    contractName: "HogwartsTournament",
+    functionName: "getHousePoints",
+    args: [1],
+  });
+  const { data: ravenclawHousePoints } = useScaffoldReadContract({
+    contractName: "HogwartsTournament",
+    functionName: "getHousePoints",
+    args: [2],
+  });
+  const { data: slytherinHousePoints } = useScaffoldReadContract({
+    contractName: "HogwartsTournament",
+    functionName: "getHousePoints",
+    args: [3],
+  });
 
-  const [points] = useState({
+  const [points, setPoints] = useState({
     Hufflepuff: { frozen: 0, points: 0 },
     Ravenclaw: { frozen: 0, points: 0 },
     Gryffindor: { frozen: 0, points: 0 },
@@ -98,51 +120,26 @@ const Home: NextPage = () => {
   const hasSendUserOperationAsync = useMemo(() => !!sendUserOperationAsync, [sendUserOperationAsync]);
 
   useEffect(() => {
-    if (!client) return;
-    if (!address) return;
-    if (!sendUserOperationAsync) return;
-
-    const promiseNfts = graphQlClient.request(query).then(({ wizards }: any) => {
-      return wizards.reduce(
-        (acc: WizardsInHouses, wizard: any) => {
-          const house = fromHouseNumber(Number(wizard.house));
-          acc[house].push({
-            imageUrl: urlFromHouseNumber(Number(wizard.house)),
-            name: String(wizard.name),
-            stunned: !!wizard.stunnedStatus,
-            tokenId: String(wizard.id),
-            house,
-          });
-          return acc;
-        },
-        {
-          Hufflepuff: [],
-          Ravenclaw: [],
-          Gryffindor: [],
-          Slytherin: [],
-        },
-      );
+    setPoints({
+      Hufflepuff: {
+        frozen: wizards.Hufflepuff.map(x => +x.stunned).reduce(sum, 0),
+        points: Number(hufflepuffHousePoints || 0),
+      },
+      Ravenclaw: {
+        frozen: wizards.Ravenclaw.map(x => +x.stunned).reduce(sum, 0),
+        points: Number(ravenclawHousePoints || 0),
+      },
+      Gryffindor: {
+        frozen: wizards.Gryffindor.map(x => +x.stunned).reduce(sum, 0),
+        points: Number(gryffindorHousePoints || 0),
+      },
+      Slytherin: {
+        frozen: wizards.Slytherin.map(x => +x.stunned).reduce(sum, 0),
+        points: Number(slytherinHousePoints || 0),
+      },
     });
-    const promiseMyNfts = client.nft.getNftsForOwner(address, {
-      pageSize: 1,
-      contractAddresses: [CONTRACT_ADDRESS],
-    });
-    const promiseMyWizard = promiseMyNfts.then(async ({ ownedNfts }): Promise<WizardInfo | null> => {
-      if (!ownedNfts.length) return null;
-      const [nft] = ownedNfts;
-
-      return await fetchNftData(client, nft);
-    });
-
-    (async () => {
-      const settingWizards = await promiseNfts;
-      const settingMyWizard = await promiseMyWizard;
-      const myNfts = await promiseMyNfts;
-      setWizards(settingWizards);
-      setMyWizard(settingMyWizard);
-      console.log({ myNfts });
-    })();
-  }, [hasSendUserOperationAsync, hasClient, address]);
+  }, [gryffindorHousePoints, hufflepuffHousePoints, ravenclawHousePoints, slytherinHousePoints, wizards]);
+  useEffect(updateHouses, [hasSendUserOperationAsync, hasClient, address]);
 
   if (!client) return <div>Please Login...</div>;
 
@@ -252,6 +249,7 @@ const Home: NextPage = () => {
                   houseData={wizardData.find(w => w.name === myWizard.house)!}
                   client={client}
                   myWizard={myWizard}
+                  onChange={updateHouses}
                 />
               </div>
             </div>
@@ -294,6 +292,7 @@ const Home: NextPage = () => {
                       houseData={houseData}
                       client={client}
                       myWizard={myWizard}
+                      onChange={updateHouses}
                     />
                   ))}
                 </div>
@@ -307,6 +306,53 @@ const Home: NextPage = () => {
       </div>
     </div>
   );
+
+  function updateHouses() {
+    if (!client) return;
+    if (!address) return;
+    if (!sendUserOperationAsync) return;
+
+    const promiseNfts = graphQlClient.request(query).then(({ wizards }: any) => {
+      return wizards.reduce(
+        (acc: WizardsInHouses, wizard: any) => {
+          const house = fromHouseNumber(Number(wizard.house));
+          acc[house].push({
+            imageUrl: urlFromHouseNumber(Number(wizard.house)),
+            name: String(wizard.name),
+            stunned: !!wizard.stunnedStatus,
+            tokenId: String(wizard.id),
+            house,
+          });
+          return acc;
+        },
+        {
+          Hufflepuff: [],
+          Ravenclaw: [],
+          Gryffindor: [],
+          Slytherin: [],
+        },
+      );
+    });
+    const promiseMyNfts = client.nft.getNftsForOwner(address, {
+      pageSize: 1,
+      contractAddresses: [CONTRACT_ADDRESS],
+    });
+    const promiseMyWizard = promiseMyNfts.then(async ({ ownedNfts }): Promise<WizardInfo | null> => {
+      if (!ownedNfts.length) return null;
+      const [nft] = ownedNfts;
+
+      return await fetchNftData(client, nft);
+    });
+
+    (async () => {
+      const settingWizards = await promiseNfts;
+      const settingMyWizard = await promiseMyWizard;
+      const myNfts = await promiseMyNfts;
+      setWizards(settingWizards);
+      setMyWizard(settingMyWizard);
+      console.log({ myNfts });
+    })();
+  }
 };
 
 export default Home;
@@ -325,4 +371,8 @@ async function fetchNftData(client: Client, nft: Nft): Promise<WizardInfo> {
     stunned,
     tokenId: nft.tokenId,
   };
+}
+
+function sum(a: number, b: number) {
+  return a + b;
 }
