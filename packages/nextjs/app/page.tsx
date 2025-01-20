@@ -72,10 +72,16 @@ const urlFromHouseNumber = (house: number): string => {
   throw new Error(`Invalid house number: ${house}`);
 };
 
-const hogwartsTournamentAbi = deployedContracts[421614].HogwartsTournament.abi;
 const Home: NextPage = () => {
   type WizardsInHouses = Record<House, WizardInfo[]>;
   const { address, client } = useClient();
+  const [myNfts, setMyNfts] = useState<Nft | null>(null);
+  const { data: myStatus } = useScaffoldReadContract({
+    watch: true,
+    contractName: "HogwartsTournament",
+    functionName: "getWizardStatus",
+    args: [BigInt(myNfts?.tokenId || 0)],
+  });
   const { sendUserOperationAsync } = useSendUserOperation({
     client: client,
     waitForTxn: true,
@@ -83,21 +89,25 @@ const Home: NextPage = () => {
   const { data: gryffindorHousePoints } = useScaffoldReadContract({
     contractName: "HogwartsTournament",
     functionName: "getHousePoints",
+    watch: true,
     args: [0],
   });
   const { data: hufflepuffHousePoints } = useScaffoldReadContract({
     contractName: "HogwartsTournament",
     functionName: "getHousePoints",
+    watch: true,
     args: [1],
   });
   const { data: ravenclawHousePoints } = useScaffoldReadContract({
     contractName: "HogwartsTournament",
     functionName: "getHousePoints",
+    watch: true,
     args: [2],
   });
   const { data: slytherinHousePoints } = useScaffoldReadContract({
     contractName: "HogwartsTournament",
     functionName: "getHousePoints",
+    watch: true,
     args: [3],
   });
 
@@ -118,6 +128,19 @@ const Home: NextPage = () => {
   const hasClient = useMemo(() => !!client, [client]);
   const hasSendUserOperationAsync = useMemo(() => !!sendUserOperationAsync, [sendUserOperationAsync]);
 
+  useEffect(() => {
+    if (!myStatus) return;
+    if (!myNfts) return;
+    const { house, name, stunned } = myStatus;
+
+    setMyWizard({
+      imageUrl: urlFromHouseNumber(house),
+      house: fromHouseNumber(house),
+      name,
+      stunned,
+      tokenId: myNfts?.tokenId,
+    });
+  }, [myNfts, myStatus]);
   useEffect(() => {
     setPoints({
       Hufflepuff: {
@@ -239,7 +262,6 @@ const Home: NextPage = () => {
                 ))}
               </div>
               {/* Wizard Card */}
-              test
               <div className="relative backdrop-blur-sm">
                 <WizardCard
                   wizard={myWizard}
@@ -334,41 +356,17 @@ const Home: NextPage = () => {
       pageSize: 1,
       contractAddresses: [CONTRACT_ADDRESS],
     });
-    const promiseMyWizard = promiseMyNfts.then(async ({ ownedNfts }): Promise<WizardInfo | null> => {
-      if (!ownedNfts.length) return null;
-      const [nft] = ownedNfts;
-
-      return await fetchNftData(client, nft);
-    });
 
     (async () => {
       const settingWizards = await promiseNfts;
-      const settingMyWizard = await promiseMyWizard;
-      const myNfts = await promiseMyNfts;
+      const settingMyNfts = await promiseMyNfts;
+      setMyNfts(settingMyNfts.ownedNfts[0]);
       setWizards(settingWizards);
-      setMyWizard(settingMyWizard);
-      console.log({ myNfts });
     })();
   }
 };
 
 export default Home;
-async function fetchNftData(client: Client, nft: Nft): Promise<WizardInfo> {
-  if (!client) throw new Error("Client expected to not be null");
-  const { house, name, stunned } = await client.readContract({
-    address: CONTRACT_ADDRESS,
-    abi: hogwartsTournamentAbi,
-    functionName: "getWizardStatus",
-    args: [BigInt(nft.tokenId)],
-  });
-  return {
-    imageUrl: urlFromHouseNumber(house),
-    house: fromHouseNumber(house),
-    name,
-    stunned,
-    tokenId: nft.tokenId,
-  };
-}
 
 function sum(a: number, b: number) {
   return a + b;
