@@ -21,7 +21,7 @@ contract HogwartsTournament is ERC721, ERC721URIStorage, Ownable {
     event WizardStunned(uint256 tokenId);
     event WizardRevived(uint256 tokenId, uint256 reviverTokenId);
 
-    string private constant GRYFFINDOR_URI = "ipfs://QmGryffindorHash";
+    string private constant GRYFFINDOR_URI = "ipfs://QmGryffindorrHash";
     string private constant HUFFLEPUFF_URI = "ipfs://QmHufflepuffHash";
     string private constant RAVENCLAW_URI = "ipfs://QmRavenclawHash";
     string private constant SLYTHERIN_URI = "ipfs://QmSlytherinHash";
