@@ -2,8 +2,16 @@ import { calculateCreate2Address } from "./calculateCreate2Address";
 import { getChainById } from "./chainUtils";
 import { getAccountKitClient } from "./getAccountKitClient";
 import { randomBytes } from "crypto";
+import { ethers } from "ethers";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 
-export async function deployWithAA(chainId: string | number, bytecode: string) {
+export async function deployWithAA(
+  factory: ethers.ContractFactory,
+  contractName: string,
+  hre: HardhatRuntimeEnvironment,
+) {
+  const provider = hre.ethers.provider;
+  const chainId = (await provider.getNetwork()).chainId.toString();
   const chain = getChainById(chainId);
   const client = await getAccountKitClient(chain);
 
@@ -13,9 +21,9 @@ export async function deployWithAA(chainId: string | number, bytecode: string) {
   // CREATE2 (salt + bytecode + sender)
   // lets just make the salt random so it deploys a new contract each time
   const salt = randomBytes(32).toString("hex");
-  const data = ("0x" + salt + bytecode.slice(2)) as `0x${string}`;
+  const data = ("0x" + salt + factory.bytecode.slice(2)) as `0x${string}`;
 
-  const deployedAddress = calculateCreate2Address(target, "0x" + salt, bytecode);
+  const deployedAddress = calculateCreate2Address(target, "0x" + salt, factory.bytecode);
 
   console.log("Sending user operation...");
   const userOpResponse = await client.sendUserOperation({
@@ -37,6 +45,22 @@ export async function deployWithAA(chainId: string | number, bytecode: string) {
 
   const transactionHash = await client.waitForUserOperationTransaction({ hash: userOpHash });
   console.log("Transaction hash:", transactionHash);
+
+  await hre.deployments.save(contractName, {
+    abi: factory.interface.fragments.map(fragment => {
+      const f = fragment as ethers.FunctionFragment;
+      return {
+        type: f.type,
+        name: f.name,
+        stateMutability: f.stateMutability,
+        inputs: f.inputs || [],
+        outputs: f.outputs || [],
+      };
+    }),
+    address: deployedAddress,
+    bytecode: factory.bytecode,
+    deployedBytecode: await provider.getCode(deployedAddress),
+  });
 
   return deployedAddress;
 }

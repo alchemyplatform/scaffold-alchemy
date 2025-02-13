@@ -7,155 +7,37 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   11011: {
     Counter: {
-      address: "0x3e69407580922e372706c71164f00b10036478d1",
-      abi: [
-        "function decrement()",
-        "function increment()",
-        "function x() view returns (uint256)",
-      ],
-      inheritedFunctions: {},
-    },
-  },
-  421614: {
-    YourContract: {
-      address: "0x96eBB7c6fbD83F48f983E944b7f6699CBABE6076",
+      address: "0x72b1432daf511d48d1088453e2bae5fcdc074cc1",
       abi: [
         {
-          inputs: [
-            {
-              internalType: "address",
-              name: "_owner",
-              type: "address",
-            },
-          ],
+          type: "function",
+          name: "decrement",
           stateMutability: "nonpayable",
-          type: "constructor",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "greetingSetter",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "string",
-              name: "newGreeting",
-              type: "string",
-            },
-            {
-              indexed: false,
-              internalType: "bool",
-              name: "premium",
-              type: "bool",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "value",
-              type: "uint256",
-            },
-          ],
-          name: "GreetingChange",
-          type: "event",
-        },
-        {
           inputs: [],
-          name: "greeting",
-          outputs: [
-            {
-              internalType: "string",
-              name: "",
-              type: "string",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "owner",
-          outputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "premium",
-          outputs: [
-            {
-              internalType: "bool",
-              name: "",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "string",
-              name: "_newGreeting",
-              type: "string",
-            },
-          ],
-          name: "setGreeting",
           outputs: [],
-          stateMutability: "payable",
-          type: "function",
         },
         {
-          inputs: [],
-          name: "totalCounter",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
           type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          name: "userGreetingCounter",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "withdraw",
-          outputs: [],
+          name: "increment",
           stateMutability: "nonpayable",
-          type: "function",
+          inputs: [],
+          outputs: [],
         },
         {
-          stateMutability: "payable",
-          type: "receive",
+          type: "function",
+          name: "x",
+          stateMutability: "view",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              baseType: "uint256",
+              components: null,
+              arrayLength: null,
+              arrayChildren: null,
+            },
+          ],
         },
       ],
       inheritedFunctions: {},
