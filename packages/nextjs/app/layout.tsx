@@ -1,7 +1,6 @@
 import { headers } from "next/headers";
 import { Providers } from "./providers";
 import { cookieToInitialState } from "@account-kit/core";
-import "@rainbow-me/rainbowkit/styles.css";
 import { config } from "~~/config";
 import "~~/styles/globals.css";
 import { getMetadata } from "~~/utils/scaffold-eth/getMetadata";

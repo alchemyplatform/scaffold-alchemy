@@ -40,7 +40,7 @@ const config: HardhatUserConfig = {
       },
     ],
   },
-  defaultNetwork: "localhost",
+  defaultNetwork: "shapeSepolia",
   namedAccounts: {
     deployer: {
       // By default, it will take the first Hardhat account as the deployer
@@ -144,12 +144,12 @@ const config: HardhatUserConfig = {
       url: "https://rpc.scroll.io",
       accounts: [deployerPrivateKey],
     },
-    pgn: {
-      url: "https://rpc.publicgoods.network",
+    shape: {
+      url: `https://shape-mainnet.g.alchemy.com/v2/${providerApiKey}`,
       accounts: [deployerPrivateKey],
     },
-    pgnTestnet: {
-      url: "https://sepolia.publicgoods.network",
+    shapeSepolia: {
+      url: `https://shape-sepolia.g.alchemy.com/v2/${providerApiKey}`,
       accounts: [deployerPrivateKey],
     },
     celo: {

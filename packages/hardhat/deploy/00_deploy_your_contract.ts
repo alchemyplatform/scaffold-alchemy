@@ -1,44 +1,34 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
-import { Contract } from "ethers";
-
+import { deployWithAA } from "../utils/deployWithAA";
 /**
- * Deploys a contract named "YourContract" using the deployer account and
- * constructor arguments set to the deployer address
+ * Deploys a contract named "Counter" using a smart account associated to SIGNING_KEY, if provided,
+ * or else a random signing key will be used
  *
  * @param hre HardhatRuntimeEnvironment object.
  */
+const CONTRACT_NAME = "Counter";
 const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-  /*
-    On localhost, the deployer account is the one that comes with Hardhat, which is already funded.
+  const factory = await hre.ethers.getContractFactory(CONTRACT_NAME);
+  const provider = hre.ethers.provider;
+  const chainId = (await provider.getNetwork()).chainId.toString();
+  const counterAddress = await deployWithAA(chainId, factory.bytecode);
+  console.log("👋 Counter deployed to:", counterAddress);
 
-    When deploying to live networks (e.g `yarn deploy --network sepolia`), the deployer account
-    should have sufficient balance to pay for the gas fees for contract creation.
-
-    You can generate a random account with `yarn generate` or `yarn account:import` to import your
-    existing PK which will fill DEPLOYER_PRIVATE_KEY_ENCRYPTED in the .env file (then used on hardhat.config.ts)
-    You can run the `yarn account` command to check your balance in every network.
-  */
-  const { deployer } = await hre.getNamedAccounts();
-  const { deploy } = hre.deployments;
-
-  await deploy("YourContract", {
-    from: deployer,
-    // Contract constructor arguments
-    args: [deployer],
-    log: true,
-    // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
-    // automatically mining the contract deployment transaction. There is no effect on live networks.
-    autoMine: true,
+  // Save the deployment to Hardhat's deployment system
+  await hre.deployments.save(CONTRACT_NAME, {
+    abi: factory.interface.format(),
+    address: counterAddress,
+    bytecode: factory.bytecode,
+    deployedBytecode: await provider.getCode(counterAddress),
   });
 
-  // Get the deployed contract to interact with it after deploying.
-  const yourContract = await hre.ethers.getContract<Contract>("YourContract", deployer);
-  console.log("👋 Initial greeting:", await yourContract.greeting());
+  const counter = await hre.ethers.getContractAt(CONTRACT_NAME, counterAddress);
+  console.log("👋 Initial value of x:", await counter.x());
 };
 
 export default deployYourContract;
 
 // Tags are useful if you have multiple deploy files and only want to run one of them.
-// e.g. yarn deploy --tags YourContract
-deployYourContract.tags = ["YourContract"];
+// e.g. yarn deploy --tags Counter
+deployYourContract.tags = ["Counter"];
