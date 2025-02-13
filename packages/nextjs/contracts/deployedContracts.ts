@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   11011: {
     Counter: {
-      address: "0x72b1432daf511d48d1088453e2bae5fcdc074cc1",
+      address: "0xa8774a0143b2a1b73639e18a54243a6ebcb7dd61",
       abi: [
         {
           type: "function",

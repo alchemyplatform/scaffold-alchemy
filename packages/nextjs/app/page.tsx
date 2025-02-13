@@ -4,14 +4,13 @@ import Link from "next/link";
 import { useAccount } from "@account-kit/react";
 import type { NextPage } from "next";
 import { BugAntIcon } from "@heroicons/react/24/outline";
+import { CounterUI } from "~~/components/counter/CounterUI";
 import { Address } from "~~/components/scaffold-eth";
-import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 const Home: NextPage = () => {
   const { address } = useAccount({
     type: "LightAccount",
   });
-  const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract({ contractName: "Counter" });
 
   return (
     <>
@@ -19,12 +18,17 @@ const Home: NextPage = () => {
         <div className="px-5">
           <h1 className="text-center">
             <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
+            <span className="block text-4xl font-bold">Scaffold-Alchemy</span>
           </h1>
           <div className="flex justify-center items-center space-x-2 flex-col sm:flex-row">
             <p className="my-2 font-medium">Connected Address:</p>
             <Address address={address} />
           </div>
+
+          <div className="mt-8 mb-8">
+            <CounterUI />
+          </div>
+
           <p className="text-center text-lg">
             Get started by editing{" "}
             <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
@@ -34,27 +38,13 @@ const Home: NextPage = () => {
           <p className="text-center text-lg">
             Edit your smart contract{" "}
             <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.sol
+              Counter.sol
             </code>{" "}
             in{" "}
             <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
               packages/hardhat/contracts
             </code>
           </p>
-          <button
-            className="btn btn-primary"
-            onClick={async () => {
-              try {
-                await writeYourContractAsync({
-                  functionName: "increment",
-                });
-              } catch (e) {
-                console.error("Error setting greeting:", e);
-              }
-            }}
-          >
-            Set Greeting
-          </button>
         </div>
 
         <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">

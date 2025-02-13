@@ -25,7 +25,7 @@ export async function deployWithAA(
 
   const deployedAddress = calculateCreate2Address(target, "0x" + salt, factory.bytecode);
 
-  console.log("Sending user operation...");
+  console.log("Deploying your contract in a user operation...");
   const userOpResponse = await client.sendUserOperation({
     uo: {
       target,
@@ -34,17 +34,15 @@ export async function deployWithAA(
     },
   });
 
-  console.log("User operation response:", userOpResponse);
-
   if (!userOpResponse?.hash) {
     throw new Error(`Failed to get userOpHash. Response: ${JSON.stringify(userOpResponse)}`);
   }
 
   const userOpHash = userOpResponse.hash;
-  console.log("User operation hash:", userOpHash);
+  console.log("User operation:", userOpHash);
 
   const transactionHash = await client.waitForUserOperationTransaction({ hash: userOpHash });
-  console.log("Transaction hash:", transactionHash);
+  console.log("Transaction:", transactionHash);
 
   await hre.deployments.save(contractName, {
     abi: factory.interface.fragments.map(fragment => {
