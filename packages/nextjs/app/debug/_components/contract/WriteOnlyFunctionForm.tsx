@@ -47,13 +47,11 @@ export const WriteOnlyFunctionForm = ({
   const { targetNetwork } = useTargetNetwork();
   const writeDisabled = !chain || chain?.id !== targetNetwork.id;
 
-  // const { data: result, isPending, writeContractAsync } = useWriteContract();
-
   const handleWrite = async () => {
     if (sendUserOperationAsync) {
       try {
         const makeWriteWithParams = async () => {
-          if (!client) throw Error("Expecting the client");
+          if (!client) throw Error("You must first login before making an onchain action");
 
           const { hash } = await sendUserOperationAsync({
             uo: {

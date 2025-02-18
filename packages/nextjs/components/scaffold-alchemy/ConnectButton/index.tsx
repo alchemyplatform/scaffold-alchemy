@@ -4,17 +4,15 @@
 import { Balance } from "../Balance";
 import { AddressInfoDropdown } from "./AddressInfoDropdown";
 import { AddressQRCodeModal } from "./AddressQRCodeModal";
-import { useAuthModal } from "@account-kit/react";
+import { useAuthModal, useChain } from "@account-kit/react";
 import { Address } from "viem";
 import { arbitrumSepolia } from "viem/chains";
 import { useNetworkColor } from "~~/hooks/scaffold-alchemy";
 import { useClient } from "~~/hooks/scaffold-alchemy/useClient";
 import { getBlockExplorerAddressLink } from "~~/utils/scaffold-alchemy";
 
-/**
- * Custom Wagmi Connect Button (watch balance + custom design)
- */
-export const RainbowKitCustomConnectButton = () => {
+export const ConnectButton = () => {
+  const { chain } = useChain();
   const networkColor = useNetworkColor();
   const { openAuthModal } = useAuthModal();
   const { address } = useClient();
@@ -23,7 +21,7 @@ export const RainbowKitCustomConnectButton = () => {
   if (!connected) {
     return (
       <button className="btn btn-primary btn-sm" onClick={openAuthModal} type="button">
-        Connect Wallet
+        Login
       </button>
     );
   }
@@ -39,12 +37,12 @@ export const RainbowKitCustomConnectButton = () => {
       <div className="flex flex-col items-center mr-1">
         <Balance address={address as Address} className="min-h-0 h-auto" />
         <span className="text-xs" style={{ color: networkColor }}>
-          Arbitrum Sepolia
+          {chain.name}
         </span>
       </div>
       <AddressInfoDropdown
         address={address as Address}
-        displayName="Jade"
+        displayName=""
         blockExplorerAddressLink={blockExplorerAddressLink}
       />
       <AddressQRCodeModal address={address as Address} modalId="qrcode-modal" />
