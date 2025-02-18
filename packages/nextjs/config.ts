@@ -16,10 +16,13 @@ if (process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID) {
   ]);
 }
 
+// TODO: add your Alchemy API key - setup your app and embedded account config in the alchemy dashboard (https://dashboard.alchemy.com/accounts)
+export const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!;
+
 export const config = createConfig(
   {
     // alchemy config
-    transport: alchemy({ apiKey: scaffoldConfig.alchemyApiKey }), // TODO: add your Alchemy API key - setup your app and embedded account config in the alchemy dashboard (https://dashboard.alchemy.com/accounts)
+    transport: alchemy({ apiKey }),
     policyId: process.env.NEXT_PUBLIC_ALCHEMY_GAS_POLICY_ID,
     // chain: shapeSepolia,
     chain: getChainById(scaffoldConfig.targetNetworks[0].id), // TODO: specify your preferred chain here and update imports from @account-kit/infra
