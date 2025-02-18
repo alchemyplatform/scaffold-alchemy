@@ -1,6 +1,6 @@
 name: Bug Report
 description: File a bug/issue
-title: 'bug: <title>'
+title: "bug: <title>"
 body:
   - type: markdown
     attributes:
@@ -12,17 +12,17 @@ body:
       label: Is there an existing issue for this?
       description: Please search to see if an issue already exists for the bug you encountered.
       options:
-        - label: I have looked through the [existing issues](https://github.com/scaffold-eth/scaffold-eth-2/issues)
+        - label: I have looked through the [existing issues](https://github.com/alchemyplatform/scaffold-alchemy/issues)
           required: true
 
   - type: dropdown
     attributes:
-      label: Which method was used to setup Scaffold-ETH 2 ?
+      label: Which method was used to setup Scaffold-Alchemy?
       description: You may select both, if the bug is present in both the methods.
       multiple: true
       options:
         - git clone
-        - npx create-eth@latest
+        - npx create-web3-dapp@latest
     validations:
       required: true
 

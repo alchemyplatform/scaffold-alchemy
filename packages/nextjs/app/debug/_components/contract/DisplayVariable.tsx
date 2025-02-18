@@ -7,9 +7,9 @@ import { Abi, AbiFunction } from "abitype";
 import { Address } from "viem";
 import { useReadContract } from "wagmi";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
-import { useAnimationConfig } from "~~/hooks/scaffold-eth";
-import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
-import { getParsedError, notification } from "~~/utils/scaffold-eth";
+import { useAnimationConfig } from "~~/hooks/scaffold-alchemy";
+import { useTargetNetwork } from "~~/hooks/scaffold-alchemy/useTargetNetwork";
+import { getParsedError, notification } from "~~/utils/scaffold-alchemy";
 
 type DisplayVariableProps = {
   contractAddress: Address;

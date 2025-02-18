@@ -5,7 +5,7 @@ import { useAccount } from "@account-kit/react";
 import type { NextPage } from "next";
 import { BugAntIcon } from "@heroicons/react/24/outline";
 import { CounterUI } from "~~/components/counter/CounterUI";
-import { Address } from "~~/components/scaffold-eth";
+import { Address } from "~~/components/scaffold-alchemy";
 
 const Home: NextPage = () => {
   const { address } = useAccount({

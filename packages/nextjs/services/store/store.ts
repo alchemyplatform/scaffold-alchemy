@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import scaffoldConfig from "~~/scaffold.config";
-import { ChainWithAttributes } from "~~/utils/scaffold-eth";
+import { ChainWithAttributes } from "~~/utils/scaffold-alchemy";
 
 /**
  * Zustand Store
