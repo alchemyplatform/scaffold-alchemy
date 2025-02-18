@@ -1,8 +1,8 @@
 import React from "react";
+import Image from "next/image";
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import { HeartIcon } from "@heroicons/react/24/outline";
 import { SwitchTheme } from "~~/components/SwitchTheme";
-import { BuidlGuidlLogo } from "~~/components/assets/BuidlGuidlLogo";
 import { useGlobalState } from "~~/services/store/store";
 
 /**
@@ -48,17 +48,19 @@ export const Footer = () => {
               </p>
               <a
                 className="flex justify-center items-center gap-1"
-                href="https://buidlguidl.com/"
+                href="https://alchemy.com/"
                 target="_blank"
                 rel="noreferrer"
               >
-                <BuidlGuidlLogo className="w-3 h-5 pb-1" />
-                <span className="link">BuidlGuidl</span>
+                <div className="flex relative w-3 h-3">
+                  <Image alt="Alchemy logo" className="cursor-pointer" fill src="/logo.svg" />
+                </div>
+                <span className="link">Alchemy</span>
               </a>
             </div>
             <span>·</span>
             <div className="text-center">
-              <a href="https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA" target="_blank" rel="noreferrer" className="link">
+              <a href="https://discord.com/invite/9GnAcXQYZ6" target="_blank" rel="noreferrer" className="link">
                 Support
               </a>
             </div>
