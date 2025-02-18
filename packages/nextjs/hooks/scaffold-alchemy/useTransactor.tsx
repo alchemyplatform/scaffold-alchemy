@@ -1,8 +1,10 @@
+import { useEffect, useState } from "react";
 import { useChain } from "@account-kit/react";
 import { getPublicClient } from "@wagmi/core";
 import { Hash, TransactionReceipt } from "viem";
 import { Config } from "wagmi";
 import { SendTransactionMutate } from "wagmi/query";
+import scaffoldConfig from "~~/scaffold.config";
 import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 import { getBlockExplorerTxLink, getParsedError, notification } from "~~/utils/scaffold-alchemy";
 import { TransactorFuncOptions } from "~~/utils/scaffold-alchemy/contract";
@@ -16,9 +18,31 @@ type TransactionFunc = (
  * Custom notification content for TXs.
  */
 const TxnNotification = ({ message, blockExplorerLink }: { message: string; blockExplorerLink?: string }) => {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (blockExplorerLink || !scaffoldConfig.expectedUserOpTime) return;
+
+    const startTime = Date.now();
+    const duration = scaffoldConfig.expectedUserOpTime;
+
+    const timer = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const current = Math.min((elapsed / duration) * 100, 100);
+      setProgress(current);
+
+      if (current >= 100) {
+        clearInterval(timer);
+      }
+    }, 100);
+
+    return () => clearInterval(timer);
+  }, [blockExplorerLink]);
+
   return (
     <div className={`flex flex-col ml-1 cursor-default`}>
       <p className="my-0">{message}</p>
+      {!blockExplorerLink && <progress className="progress progress-success w-full my-2" value={progress} max="100" />}
       {blockExplorerLink && blockExplorerLink.length > 0 ? (
         <a href={blockExplorerLink} target="_blank" rel="noreferrer" className="block link text-md">
           check out transaction
@@ -46,7 +70,7 @@ export const useTransactor = (): TransactionFunc => {
       // Get full transaction from public client
       const publicClient = getPublicClient(wagmiConfig);
 
-      notificationId = notification.loading(<TxnNotification message="Sending user operation..." />);
+      notificationId = notification.loading(<TxnNotification message="Sending transaction..." />);
       if (typeof tx === "function") {
         // Tx is already prepared by the caller
         const result = await tx();

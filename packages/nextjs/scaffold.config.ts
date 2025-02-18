@@ -5,7 +5,7 @@ export type ScaffoldConfig = {
   pollingInterval: number;
   alchemyApiKey: string;
   walletConnectProjectId: string;
-  onlyLocalBurnerWallet: boolean;
+  expectedUserOpTime: number;
 };
 
 export const DEFAULT_ALCHEMY_API_KEY = "oKxs-03sij-U_N0iOlrSsZFr29-IqbuF";
@@ -18,20 +18,22 @@ const scaffoldConfig = {
   // it has no effect if you only target the local network (default is 4000)
   pollingInterval: 30000,
 
-  // This is ours Alchemy's default API key.
+  // This is a default API key.
   // You can get your own at https://dashboard.alchemyapi.io
   // It's recommended to store it in an env variable:
   // .env.local for local testing, and in the Vercel/system env config for live apps.
   alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || DEFAULT_ALCHEMY_API_KEY,
 
-  // This is ours WalletConnect's default project ID.
+  // This is the expected time it takes for a user operation to be included in a block.
+  // This is used to calculate the progress of the transaction.
+  // set it to 0 to disable the progress bar
+  expectedUserOpTime: 10_000,
+
+  // This is our default project ID.
   // You can get your own at https://cloud.walletconnect.com
   // It's recommended to store it in an env variable:
   // .env.local for local testing, and in the Vercel/system env config for live apps.
   walletConnectProjectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "3a8170812b534d0ff9d794f19a901d64",
-
-  // Only show the Burner Wallet when running on hardhat network
-  onlyLocalBurnerWallet: true,
 } as const satisfies ScaffoldConfig;
 
 export default scaffoldConfig;
