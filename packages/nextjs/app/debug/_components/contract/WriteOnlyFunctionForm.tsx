@@ -14,10 +14,10 @@ import {
   getParsedContractFunctionArgs,
   transformAbiFunction,
 } from "~~/app/debug/_components/contract";
-import { IntegerInput } from "~~/components/scaffold-eth";
-import { useTransactor } from "~~/hooks/scaffold-eth";
-import { useClient } from "~~/hooks/scaffold-eth/useClient";
-import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
+import { IntegerInput } from "~~/components/scaffold-alchemy";
+import { useTransactor } from "~~/hooks/scaffold-alchemy";
+import { useClient } from "~~/hooks/scaffold-alchemy/useClient";
+import { useTargetNetwork } from "~~/hooks/scaffold-alchemy/useTargetNetwork";
 
 type WriteOnlyFunctionFormProps = {
   abi: Abi;

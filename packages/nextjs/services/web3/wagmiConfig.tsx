@@ -1,9 +1,8 @@
-import { wagmiConnectors } from "./wagmiConnectors";
 import { Chain, createClient, fallback, http } from "viem";
 import { hardhat, mainnet } from "viem/chains";
 import { createConfig } from "wagmi";
 import scaffoldConfig, { DEFAULT_ALCHEMY_API_KEY } from "~~/scaffold.config";
-import { getAlchemyHttpUrl } from "~~/utils/scaffold-eth";
+import { getAlchemyHttpUrl } from "~~/utils/scaffold-alchemy";
 
 const { targetNetworks } = scaffoldConfig;
 
@@ -14,7 +13,7 @@ export const enabledChains = targetNetworks.find((network: Chain) => network.id 
 
 export const wagmiConfig = createConfig({
   chains: enabledChains,
-  connectors: wagmiConnectors,
+
   ssr: true,
   client({ chain }) {
     let rpcFallbacks = [http()];
@@ -22,7 +21,7 @@ export const wagmiConfig = createConfig({
     const alchemyHttpUrl = getAlchemyHttpUrl(chain.id);
     if (alchemyHttpUrl) {
       const isUsingDefaultKey = scaffoldConfig.alchemyApiKey === DEFAULT_ALCHEMY_API_KEY;
-      // If using default Scaffold-ETH 2 API key, we prioritize the default RPC
+      // If using default Scaffold-Alchemy API key, we prioritize the default RPC
       rpcFallbacks = isUsingDefaultKey ? [http(), http(alchemyHttpUrl)] : [http(alchemyHttpUrl), http()];
     }
 

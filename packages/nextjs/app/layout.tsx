@@ -1,14 +1,13 @@
 import { headers } from "next/headers";
 import { Providers } from "./providers";
 import { cookieToInitialState } from "@account-kit/core";
-import "@rainbow-me/rainbowkit/styles.css";
 import { config } from "~~/config";
 import "~~/styles/globals.css";
-import { getMetadata } from "~~/utils/scaffold-eth/getMetadata";
+import { getMetadata } from "~~/utils/scaffold-alchemy/getMetadata";
 
 export const metadata = getMetadata({
-  title: "Scaffold-ETH 2 App",
-  description: "Built with 🏗 Scaffold-ETH 2",
+  title: "Scaffold-Alchemy App",
+  description: "Built with 🏗 Scaffold-Alchemy",
 });
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {

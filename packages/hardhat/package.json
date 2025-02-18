@@ -2,17 +2,13 @@
   "name": "@se-2/hardhat",
   "version": "0.0.1",
   "scripts": {
-    "account": "hardhat run scripts/listAccount.ts",
-    "account:generate": "hardhat run scripts/generateAccount.ts",
-    "account:import": "hardhat run scripts/importAccount.ts",
     "chain": "hardhat node --network hardhat --no-deploy",
     "check-types": "tsc --noEmit --incremental",
     "compile": "hardhat compile",
-    "deploy": "ts-node scripts/runHardhatDeployWithPK.ts",
+    "deploy": "hardhat deploy",
     "flatten": "hardhat flatten",
     "fork": "MAINNET_FORKING_ENABLED=true hardhat node --network hardhat --no-deploy",
     "format": "prettier --write './**/*.(ts|sol)'",
-    "generate": "yarn account:generate",
     "hardhat-verify": "hardhat verify",
     "lint": "eslint --config ./.eslintrc.json --ignore-path ./.eslintignore ./*.ts ./deploy/**/*.ts ./scripts/**/*.ts ./test/**/*.ts",
     "lint-staged": "eslint --config ./.eslintrc.json --ignore-path ./.eslintignore",
@@ -51,11 +47,16 @@
     "typescript": "<5.6.0"
   },
   "dependencies": {
+    "@aa-sdk/core": "^4.12.0",
+    "@account-kit/infra": "^4.12.0",
+    "@account-kit/smart-contracts": "^4.12.0",
     "@inquirer/password": "^4.0.2",
     "@openzeppelin/contracts": "^5.0.2",
     "@typechain/ethers-v6": "^0.5.1",
     "dotenv": "^16.4.5",
     "envfile": "^7.1.0",
-    "qrcode": "^1.5.4"
+    "ethereum-cryptography": "^3.1.0",
+    "qrcode": "^1.5.4",
+    "viem": "^2.23.2"
   }
 }
