@@ -1,7 +1,7 @@
 import { alchemyEnhancedApiActions } from "@account-kit/infra";
 import { UseSmartAccountClientProps, useSmartAccountClient } from "@account-kit/react";
 import { Alchemy, Network } from "alchemy-sdk";
-import { apiKey } from "~~/config";
+import scaffoldConfig from "~~/scaffold.config";
 
 export const useClient = (
   config: UseSmartAccountClientProps = {
@@ -9,7 +9,7 @@ export const useClient = (
   },
 ) => {
   const alchemy = new Alchemy({
-    apiKey,
+    apiKey: scaffoldConfig.alchemyApiKey,
     network: Network.ARB_SEPOLIA,
   });
   const enhancedApiDecorator = alchemyEnhancedApiActions(alchemy);

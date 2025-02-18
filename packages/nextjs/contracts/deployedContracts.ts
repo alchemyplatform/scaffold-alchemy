@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-alchemy/contract"
 const deployedContracts = {
   11011: {
     Counter: {
-      address: "0x4e3376a2234c63c50ce8d0a3b55fb275a81fc2e4",
+      address: "0x747fed2c77c3688fad4c26bfafe561fe38c39128",
       abi: [
         {
           type: "function",
