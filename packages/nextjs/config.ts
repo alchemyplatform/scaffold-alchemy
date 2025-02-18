@@ -16,22 +16,19 @@ if (process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID) {
   ]);
 }
 
-// TODO: add your Alchemy API key - setup your app and embedded account config in the alchemy dashboard (https://dashboard.alchemy.com/accounts)
-export const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!;
+const DEFAULT_ALCHEMY_GAS_POLICY_ID = "f0d2920d-b0dc-4e55-ab21-2fcb483bc293";
+const policyId = process.env.NEXT_PUBLIC_ALCHEMY_GAS_POLICY_ID || DEFAULT_ALCHEMY_GAS_POLICY_ID;
 
 export const config = createConfig(
   {
-    // alchemy config
-    transport: alchemy({ apiKey }),
-    policyId: process.env.NEXT_PUBLIC_ALCHEMY_GAS_POLICY_ID,
-    // chain: shapeSepolia,
-    chain: getChainById(scaffoldConfig.targetNetworks[0].id), // TODO: specify your preferred chain here and update imports from @account-kit/infra
-    ssr: true, // Defers hydration of the account state to the client after the initial mount solving any inconsistencies between server and client state (read more here: https://accountkit.alchemy.com/react/ssr)
-    storage: cookieStorage, // persist the account state using cookies (read more here: https://accountkit.alchemy.com/react/ssr#persisting-the-account-state)
-    enablePopupOauth: true, // must be set to "true" if you plan on using popup rather than redirect in the social login flow
+    transport: alchemy({ apiKey: scaffoldConfig.alchemyApiKey }),
+    policyId,
+    chain: getChainById(scaffoldConfig.targetNetworks[0].id),
+    ssr: true,
+    storage: cookieStorage,
+    enablePopupOauth: true,
   },
   {
-    // authentication ui config - your customizations here
     auth: {
       sections: authSections,
       addPasskeyOnSignup: false,
