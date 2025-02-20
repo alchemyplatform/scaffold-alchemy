@@ -12,31 +12,46 @@ type ChainAttributes = {
 export type ChainWithAttributes = chains.Chain & Partial<ChainAttributes>;
 export type AllowedChainIds = (typeof scaffoldConfig.targetNetworks)[number]["id"];
 
-// Mapping of chainId to RPC chain name an format followed by alchemy and infura
+// Mapping of chainId to RPC chain name
 export const RPC_CHAIN_NAMES: Record<number, string> = {
+  // Mainnets
   [chains.mainnet.id]: "eth-mainnet",
-  [chains.goerli.id]: "eth-goerli",
-  [chains.sepolia.id]: "eth-sepolia",
-  [chains.optimism.id]: "opt-mainnet",
-  [chains.optimismGoerli.id]: "opt-goerli",
-  [chains.optimismSepolia.id]: "opt-sepolia",
   [chains.arbitrum.id]: "arb-mainnet",
+  [chains.arbitrumNova.id]: "arb-nova",
+  [chains.base.id]: "base-mainnet",
+  [chains.polygonZkEvm.id]: "polygon-zkevm",
+  [chains.polygon.id]: "polygon-mainnet",
+  [chains.optimism.id]: "opt-mainnet",
+  [chains.zora.id]: "zora-mainnet",
+  [chains.worldchain.id]: "worldchain-mainnet",
+  [chains.shape.id]: "shape-mainnet",
+  // [chains.uninchain.id]: "unichain-mainnet",
+  // [chains.soneium.id]: "soneium-mainnet",
+  [chains.opBNB.id]: "opbnb-mainnet",
+  // [chains.inkmainnet.id]: "ink-mainnet",
+  // [chains.berachain.id]: "berachain-mainnet",
+
+  // Testnets
+  [chains.goerli.id]: "eth-goerli",
   [chains.arbitrumGoerli.id]: "arb-goerli",
   [chains.arbitrumSepolia.id]: "arb-sepolia",
-  [chains.polygon.id]: "polygon-mainnet",
-  [chains.polygonMumbai.id]: "polygon-mumbai",
-  [chains.polygonAmoy.id]: "polygon-amoy",
-  [chains.astar.id]: "astar-mainnet",
-  [chains.polygonZkEvm.id]: "polygonzkevm-mainnet",
-  [chains.polygonZkEvmTestnet.id]: "polygonzkevm-testnet",
-  [chains.base.id]: "base-mainnet",
+  [chains.optimismGoerli.id]: "opt-goerli",
+  [chains.optimismSepolia.id]: "opt-sepolia",
   [chains.baseGoerli.id]: "base-goerli",
   [chains.baseSepolia.id]: "base-sepolia",
-  [chains.celo.id]: "celo-mainnet",
-  [chains.celoAlfajores.id]: "celo-alfajores",
+  [chains.polygonMumbai.id]: "polygon-mumbai",
+  [chains.polygonAmoy.id]: "polygon-amoy",
+  [chains.zoraSepolia.id]: "zora-sepolia",
+  [chains.worldchainSepolia.id]: "worldchain-sepolia",
   [chains.shapeSepolia.id]: "shape-sepolia",
-  [chains.shape.id]: "shape-mainnet",
-};
+  [chains.unichainSepolia.id]: "unichain-sepolia",
+  [chains.soneiumMinato.id]: "soneium-minato",
+  [chains.opBNBTestnet.id]: "opbnb-testnet",
+  [chains.inkSepolia.id]: "ink-sepolia",
+  [chains.berachainTestnetbArtio.id]: "berachain-bartio",
+  [chains.sepolia.id]: "eth-sepolia",
+  [chains.mekong.id]: "mekong",
+} as const;
 
 export const getAlchemyHttpUrl = (chainId: number) => {
   return scaffoldConfig.alchemyApiKey && RPC_CHAIN_NAMES[chainId]
