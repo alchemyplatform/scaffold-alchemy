@@ -53,6 +53,14 @@ export async function deployWithAA(
 
   await hre.deployments.save(contractName, {
     abi: factory.interface.fragments.map(fragment => {
+      if (fragment.type === "constructor") {
+        const f = fragment as ethers.ConstructorFragment;
+        return {
+          type: f.type,
+          stateMutability: f.payable ? "payable" : "nonpayable",
+          inputs: f.inputs || [],
+        };
+      }
       const f = fragment as ethers.FunctionFragment;
       return {
         type: f.type,
