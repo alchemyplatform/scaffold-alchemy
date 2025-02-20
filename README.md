@@ -30,7 +30,7 @@ yarn deploy
 
 This command deploys a test smart contract to a testnet. You can see the default testnet in `packages/hardhat/hardhat/config.ts`
 
-4. In a second terminal, start your NextJS app:
+3. In a second terminal, start your NextJS app:
 
 ```
 yarn start
