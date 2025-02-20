@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { useChain, useSendUserOperation, useSmartAccountClient } from "@account-kit/react";
+import { useClient } from "./useClient";
+import { useChain, useSendUserOperation } from "@account-kit/react";
 import { ExtractAbiFunctionNames } from "abitype";
 import { Abi, EncodeFunctionDataParameters, WriteContractReturnType, encodeFunctionData } from "viem";
 import { UseWriteContractParameters, useWriteContract } from "wagmi";
@@ -80,17 +81,12 @@ export function useScaffoldWriteContract<TContractName extends ContractName>(
     chainId: selectedNetwork.id as AllowedChainIds,
   });
 
-  const { client } = useSmartAccountClient({
-    type: "LightAccount",
-  });
+  const { client } = useClient();
 
   const { sendUserOperationAsync, sendUserOperation } = useSendUserOperation({
     client,
     waitForTxn: true,
   });
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [txValue, setTxValue] = useState<string>("");
 
   const sendContractWriteAsyncTx = async <
     TFunctionName extends ExtractAbiFunctionNames<ContractAbi<TContractName>, "nonpayable" | "payable">,
@@ -121,10 +117,11 @@ export function useScaffoldWriteContract<TContractName extends ContractName>(
           uo: {
             target: deployedContractData.address,
             data: encodeFunctionData({
-              abi: deployedContractData.abi as Abi,
-              ...variables,
-            } as EncodeFunctionDataParameters<Abi, string, true, readonly unknown[], string>),
-            value: BigInt(txValue),
+              abi: deployedContractData.abi,
+              functionName: variables.functionName,
+              args: variables.args || [],
+            } as EncodeFunctionDataParameters<Abi, string>),
+            value: variables.value,
           },
         });
         return hash;
@@ -144,8 +141,6 @@ export function useScaffoldWriteContract<TContractName extends ContractName>(
     TFunctionName extends ExtractAbiFunctionNames<ContractAbi<TContractName>, "nonpayable" | "payable">,
   >(
     variables: ScaffoldWriteContractVariables<TContractName, TFunctionName>,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    options?: Omit<ScaffoldWriteContractOptions, "onBlockConfirmation" | "blockConfirmations">,
   ) => {
     if (!deployedContractData) {
       notification.error("Target Contract is not deployed, did you forget to run `yarn deploy`?");
@@ -164,10 +159,11 @@ export function useScaffoldWriteContract<TContractName extends ContractName>(
       uo: {
         target: deployedContractData.address,
         data: encodeFunctionData({
-          abi: deployedContractData.abi as Abi,
-          ...variables,
-        } as EncodeFunctionDataParameters<Abi, string, true, readonly unknown[], string>),
-        value: BigInt(txValue),
+          abi: deployedContractData.abi,
+          functionName: variables.functionName,
+          args: variables.args || [],
+        } as EncodeFunctionDataParameters<Abi, string>),
+        value: variables.value,
       },
     });
   };
