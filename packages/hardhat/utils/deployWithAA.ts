@@ -41,7 +41,14 @@ export async function deployWithAA(
   const userOpHash = userOpResponse.hash;
   console.log("User operation:", userOpHash);
 
-  const transactionHash = await client.waitForUserOperationTransaction({ hash: userOpHash });
+  const transactionHash = await client.waitForUserOperationTransaction({
+    hash: userOpHash,
+    retries: {
+      intervalMs: 1000,
+      multiplier: 1.5,
+      maxRetries: 10,
+    },
+  });
   console.log("Transaction:", transactionHash);
 
   await hre.deployments.save(contractName, {
