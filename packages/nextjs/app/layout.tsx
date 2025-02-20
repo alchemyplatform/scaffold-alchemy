@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { Providers } from "./providers";
 import { cookieToInitialState } from "@account-kit/core";
-import { config } from "~~/config";
+import { config } from "~~/account.config";
 import "~~/styles/globals.css";
 import { getMetadata } from "~~/utils/scaffold-alchemy/getMetadata";
 
