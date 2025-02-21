@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useClient } from "./useClient";
-import { useChain, useSendUserOperation } from "@account-kit/react";
+import { useSendUserOperation } from "@account-kit/react";
 import { ExtractAbiFunctionNames } from "abitype";
 import { Abi, EncodeFunctionDataParameters, WriteContractReturnType, encodeFunctionData } from "viem";
 import { UseWriteContractParameters, useWriteContract } from "wagmi";
@@ -68,7 +68,6 @@ export function useScaffoldWriteContract<TContractName extends ContractName>(
     }
   }, [configOrName]);
 
-  const { chain: accountChain } = useChain();
   const writeTx = useTransactor();
   const [isMining, setIsMining] = useState(false);
 
@@ -99,13 +98,8 @@ export function useScaffoldWriteContract<TContractName extends ContractName>(
       return;
     }
 
-    if (!accountChain?.id) {
-      notification.error("Please connect your wallet");
-      return;
-    }
-
-    if (accountChain?.id !== selectedNetwork.id) {
-      notification.error(`Wallet is connected to the wrong network. Please switch to ${selectedNetwork.name}`);
+    if (!client) {
+      notification.error(`You must first login before making an onchain action`);
       return;
     }
 
@@ -146,15 +140,7 @@ export function useScaffoldWriteContract<TContractName extends ContractName>(
       notification.error("Target Contract is not deployed, did you forget to run `yarn deploy`?");
       return;
     }
-    if (!accountChain?.id) {
-      notification.error("Please connect your wallet");
-      return;
-    }
 
-    if (accountChain?.id !== selectedNetwork.id) {
-      notification.error(`Wallet is connected to the wrong network. Please switch to ${selectedNetwork.name}`);
-      return;
-    }
     sendUserOperation({
       uo: {
         target: deployedContractData.address,
