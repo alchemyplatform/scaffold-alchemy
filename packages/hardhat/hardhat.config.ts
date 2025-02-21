@@ -50,8 +50,8 @@ const config: HardhatUserConfig = {
   },
   networks: {
     ...Object.fromEntries(
-      allChains.map(({ name, chain }) => [
-        chain.name.toLowerCase(),
+      allChains.map(({ name }) => [
+        name,
         {
           url: getAlchemyUrl(name),
         },
