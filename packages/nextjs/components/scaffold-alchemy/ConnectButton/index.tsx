@@ -6,9 +6,9 @@ import { AddressInfoDropdown } from "./AddressInfoDropdown";
 import { AddressQRCodeModal } from "./AddressQRCodeModal";
 import { useAuthModal, useChain } from "@account-kit/react";
 import { Address } from "viem";
-import { arbitrumSepolia } from "viem/chains";
 import { useNetworkColor } from "~~/hooks/scaffold-alchemy";
 import { useClient } from "~~/hooks/scaffold-alchemy/useClient";
+import scaffoldConfig from "~~/scaffold.config";
 import { getBlockExplorerAddressLink } from "~~/utils/scaffold-alchemy";
 
 export const ConnectButton = () => {
@@ -30,7 +30,7 @@ export const ConnectButton = () => {
     return <></>;
   }
 
-  const blockExplorerAddressLink = getBlockExplorerAddressLink(arbitrumSepolia, address);
+  const blockExplorerAddressLink = getBlockExplorerAddressLink(scaffoldConfig.targetNetworks[0], address);
 
   return (
     <>
