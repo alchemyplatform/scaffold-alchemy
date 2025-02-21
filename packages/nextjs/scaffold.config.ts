@@ -1,4 +1,10 @@
+import cw3dConfig from "./cw3d.config";
 import * as chains from "viem/chains";
+
+const chain = Object.values(chains).find(chain => chain.id === cw3dConfig.testnetChainId);
+if (!chain) {
+  throw new Error(`Chain with ID ${cw3dConfig.testnetChainId} not found`);
+}
 
 export type ScaffoldConfig = {
   targetNetworks: readonly chains.Chain[];
@@ -12,7 +18,7 @@ export const DEFAULT_ALCHEMY_API_KEY = "Aau4vg0U-46T4ZI857caO7otLxX3RVSo";
 
 const scaffoldConfig = {
   // The networks on which your DApp is live
-  targetNetworks: [chains.shapeSepolia],
+  targetNetworks: [chain],
 
   // The interval at which your front-end polls the RPC servers for new data
   // it has no effect if you only target the local network (default is 4000)
