@@ -23,7 +23,7 @@ export const providerApiKey = process.env.ALCHEMY_API_KEY || DEFAULT_ALCHEMY_API
 const DEFAULT_ALCHEMY_GAS_POLICY_ID = "f0d2920d-b0dc-4e55-ab21-2fcb483bc293";
 export const gasPolicyId = process.env.ALCHEMY_GAS_POLICY_ID || DEFAULT_ALCHEMY_GAS_POLICY_ID;
 
-const getAlchemyUrl = (name: string) => `https://${name}.alchemy.com/v2/${providerApiKey}`;
+const getAlchemyUrl = (name: string) => `https://${name}.g.alchemy.com/v2/${providerApiKey}`;
 
 const config: HardhatUserConfig = {
   solidity: {
