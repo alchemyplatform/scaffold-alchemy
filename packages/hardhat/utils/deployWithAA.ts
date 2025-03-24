@@ -9,6 +9,7 @@ export async function deployWithAA(
   factory: ethers.ContractFactory,
   contractName: string,
   hre: HardhatRuntimeEnvironment,
+  constructorArgs: any[] = [],
 ) {
   const provider = hre.ethers.provider;
   const chainId = (await provider.getNetwork()).chainId.toString();
@@ -21,7 +22,10 @@ export async function deployWithAA(
   // CREATE2 (salt + bytecode + sender)
   // lets just make the salt random so it deploys a new contract each time
   const salt = randomBytes(32).toString("hex");
-  const data = ("0x" + salt + factory.bytecode.slice(2)) as `0x${string}`;
+  // Encode constructor arguments and append them to the bytecode
+  const encodedArgs = factory.interface.encodeDeploy(constructorArgs);
+  const bytecodeWithArgs = factory.bytecode + encodedArgs.slice(2);
+  const data = ("0x" + salt + bytecodeWithArgs.slice(2)) as `0x${string}`;
 
   const deployedAddress = calculateCreate2Address(target, "0x" + salt, factory.bytecode);
 
