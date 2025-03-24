@@ -4,59 +4,6 @@
  */
 import { GenericContractsDeclaration } from "~~/utils/scaffold-alchemy/contract";
 
-const deployedContracts = {
-  11011: {
-    Counter: {
-      address: "0x6d4c081a6b49c5cebb615ca5f8f3cdbb6ef2bdb6",
-      abi: [
-        {
-          type: "constructor",
-          stateMutability: "nonpayable",
-          inputs: [
-            {
-              name: "_x",
-              type: "uint256",
-              baseType: "uint256",
-              components: null,
-              arrayLength: null,
-              arrayChildren: null,
-            },
-          ],
-        },
-        {
-          type: "function",
-          name: "decrement",
-          stateMutability: "nonpayable",
-          inputs: [],
-          outputs: [],
-        },
-        {
-          type: "function",
-          name: "increment",
-          stateMutability: "nonpayable",
-          inputs: [],
-          outputs: [],
-        },
-        {
-          type: "function",
-          name: "x",
-          stateMutability: "view",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              baseType: "uint256",
-              components: null,
-              arrayLength: null,
-              arrayChildren: null,
-            },
-          ],
-        },
-      ],
-      inheritedFunctions: {},
-    },
-  },
-} as const;
+const deployedContracts = {} as const;
 
 export default deployedContracts satisfies GenericContractsDeclaration;
