@@ -2,7 +2,6 @@
   "name": "@se-2/hardhat",
   "version": "0.0.1",
   "scripts": {
-    "chain": "hardhat node --network hardhat --no-deploy",
     "check-types": "tsc --noEmit --incremental",
     "compile": "hardhat compile",
     "deploy": "hardhat deploy",

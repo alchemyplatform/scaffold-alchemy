@@ -8,7 +8,7 @@ The beauty of Scaffold Alchemy is that you can have lightning fast iteration bet
 
 Before you begin, you need to install the following tools:
 
-- [Node (>= v18.18)](https://nodejs.org/en/download/)
+- [Node (>= v22.0)](https://nodejs.org/en/download/)
 - Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
 - [Git](https://git-scm.com/downloads)
 
@@ -30,7 +30,7 @@ yarn deploy
 
 This command deploys a test smart contract to a testnet. You can see the default testnet in `packages/hardhat/hardhat/config.ts`
 
-4. In a second terminal, start your NextJS app:
+3. In a second terminal, start your NextJS app:
 
 ```
 yarn start

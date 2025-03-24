@@ -3,9 +3,9 @@
 import { PropsWithChildren } from "react";
 import { AlchemyClientState } from "@account-kit/core";
 import { AlchemyAccountProvider } from "@account-kit/react";
+import { config, queryClient } from "~~/account.config";
 import { ScaffoldEthAppWithProviders } from "~~/components/ScaffoldEthAppWithProviders";
 import { ThemeProvider } from "~~/components/ThemeProvider";
-import { config, queryClient } from "~~/config";
 
 export const Providers = (props: PropsWithChildren<{ initialState?: AlchemyClientState }>) => {
   return (

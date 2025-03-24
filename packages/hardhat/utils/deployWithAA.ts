@@ -45,11 +45,26 @@ export async function deployWithAA(
   const userOpHash = userOpResponse.hash;
   console.log("User operation:", userOpHash);
 
-  const transactionHash = await client.waitForUserOperationTransaction({ hash: userOpHash });
+  const transactionHash = await client.waitForUserOperationTransaction({
+    hash: userOpHash,
+    retries: {
+      intervalMs: 1000,
+      multiplier: 1.5,
+      maxRetries: 10,
+    },
+  });
   console.log("Transaction:", transactionHash);
 
   await hre.deployments.save(contractName, {
     abi: factory.interface.fragments.map(fragment => {
+      if (fragment.type === "constructor") {
+        const f = fragment as ethers.ConstructorFragment;
+        return {
+          type: f.type,
+          stateMutability: f.payable ? "payable" : "nonpayable",
+          inputs: f.inputs || [],
+        };
+      }
       const f = fragment as ethers.FunctionFragment;
       return {
         type: f.type,

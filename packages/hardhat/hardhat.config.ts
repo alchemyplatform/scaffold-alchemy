@@ -6,28 +6,24 @@ import "@nomicfoundation/hardhat-chai-matchers";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
-import "@nomicfoundation/hardhat-verify";
 import "hardhat-deploy";
 import "hardhat-deploy-ethers";
 import { task } from "hardhat/config";
 import generateTsAbis from "./scripts/generateTsAbis";
+import cw3dConfig from "./cw3d.config";
+import { allChains } from "./utils/chainUtils";
 
-// If not set, it uses the hardhat account 0 private key.
-// You can generate a random account with `yarn generate` or `yarn account:import` to import your existing PK
 export const hardhatAccount0PrivateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
-const deployerPrivateKey = process.env.__RUNTIME_DEPLOYER_PRIVATE_KEY ?? hardhatAccount0PrivateKey;
-// If not set, it uses our block explorers default API keys.
-const etherscanApiKey = process.env.ETHERSCAN_MAINNET_API_KEY || "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW";
-const etherscanOptimisticApiKey = process.env.ETHERSCAN_OPTIMISTIC_API_KEY || "RM62RDISS1RH448ZY379NX625ASG1N633R";
-const basescanApiKey = process.env.BASESCAN_API_KEY || "ZZZEIPMT1MNJ8526VV2Y744CA7TNZR64G6";
 
-// If not set, it uses ours Alchemy's default API key.
+// If not set, it uses our default API key.
 // You can get your own at https://dashboard.alchemyapi.io
 const DEFAULT_ALCHEMY_API_KEY = "Aau4vg0U-46T4ZI857caO7otLxX3RVSo";
 export const providerApiKey = process.env.ALCHEMY_API_KEY || DEFAULT_ALCHEMY_API_KEY;
 
 const DEFAULT_ALCHEMY_GAS_POLICY_ID = "f0d2920d-b0dc-4e55-ab21-2fcb483bc293";
 export const gasPolicyId = process.env.ALCHEMY_GAS_POLICY_ID || DEFAULT_ALCHEMY_GAS_POLICY_ID;
+
+const getAlchemyUrl = (name: string) => `https://${name}.g.alchemy.com/v2/${providerApiKey}`;
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -44,139 +40,23 @@ const config: HardhatUserConfig = {
       },
     ],
   },
-  defaultNetwork: "shapeSepolia",
+  // feel free to manually change this to any network in the chainUtils.ts file
+  // use the name in any of those objects as you need
+  defaultNetwork: cw3dConfig.testnetChainName,
   namedAccounts: {
     deployer: {
-      // By default, it will take the first Hardhat account as the deployer
       default: 0,
     },
   },
   networks: {
-    // View the networks that are pre-configured.
-    // If the network you are looking for is not here you can add new network settings
-    hardhat: {
-      forking: {
-        url: `https://eth-mainnet.alchemyapi.io/v2/${providerApiKey}`,
-        enabled: process.env.MAINNET_FORKING_ENABLED === "true",
-      },
-    },
-    mainnet: {
-      url: `https://eth-mainnet.alchemyapi.io/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
-    },
-    sepolia: {
-      url: `https://eth-sepolia.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
-    },
-    arbitrum: {
-      url: `https://arb-mainnet.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
-    },
-    arbitrumSepolia: {
-      url: `https://arb-sepolia.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
-    },
-    optimism: {
-      url: `https://opt-mainnet.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
-      verify: {
-        etherscan: {
-          apiUrl: "https://api-optimistic.etherscan.io",
-          apiKey: etherscanOptimisticApiKey,
+    ...Object.fromEntries(
+      allChains.map(({ name }) => [
+        name,
+        {
+          url: getAlchemyUrl(name),
         },
-      },
-    },
-    optimismSepolia: {
-      url: `https://opt-sepolia.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
-      verify: {
-        etherscan: {
-          apiUrl: "https://api-sepolia-optimistic.etherscan.io",
-          apiKey: etherscanOptimisticApiKey,
-        },
-      },
-    },
-    polygon: {
-      url: `https://polygon-mainnet.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
-    },
-    polygonMumbai: {
-      url: `https://polygon-mumbai.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
-    },
-    polygonZkEvm: {
-      url: `https://polygonzkevm-mainnet.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
-    },
-    polygonZkEvmTestnet: {
-      url: `https://polygonzkevm-testnet.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
-    },
-    gnosis: {
-      url: "https://rpc.gnosischain.com",
-      accounts: [deployerPrivateKey],
-    },
-    chiado: {
-      url: "https://rpc.chiadochain.net",
-      accounts: [deployerPrivateKey],
-    },
-    base: {
-      url: "https://mainnet.base.org",
-      accounts: [deployerPrivateKey],
-      verify: {
-        etherscan: {
-          apiUrl: "https://api.basescan.org",
-          apiKey: basescanApiKey,
-        },
-      },
-    },
-    baseSepolia: {
-      url: "https://sepolia.base.org",
-      accounts: [deployerPrivateKey],
-      verify: {
-        etherscan: {
-          apiUrl: "https://api-sepolia.basescan.org",
-          apiKey: basescanApiKey,
-        },
-      },
-    },
-    scrollSepolia: {
-      url: "https://sepolia-rpc.scroll.io",
-      accounts: [deployerPrivateKey],
-    },
-    scroll: {
-      url: "https://rpc.scroll.io",
-      accounts: [deployerPrivateKey],
-    },
-    shape: {
-      url: `https://shape-mainnet.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
-    },
-    shapeSepolia: {
-      url: `https://shape-sepolia.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
-    },
-    celo: {
-      url: "https://forno.celo.org",
-      accounts: [deployerPrivateKey],
-    },
-    celoAlfajores: {
-      url: "https://alfajores-forno.celo-testnet.org",
-      accounts: [deployerPrivateKey],
-    },
-  },
-  // configuration for harhdat-verify plugin
-  etherscan: {
-    apiKey: `${etherscanApiKey}`,
-  },
-  // configuration for etherscan-verify from hardhat-deploy plugin
-  verify: {
-    etherscan: {
-      apiKey: `${etherscanApiKey}`,
-    },
-  },
-  sourcify: {
-    enabled: false,
+      ]),
+    ),
   },
 };
 
