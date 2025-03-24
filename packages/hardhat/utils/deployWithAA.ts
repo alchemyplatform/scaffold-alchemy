@@ -27,7 +27,7 @@ export async function deployWithAA(
   const bytecodeWithArgs = factory.bytecode + encodedArgs.slice(2);
   const data = ("0x" + salt + bytecodeWithArgs.slice(2)) as `0x${string}`;
 
-  const deployedAddress = calculateCreate2Address(target, "0x" + salt, factory.bytecode);
+  const deployedAddress = calculateCreate2Address(target, "0x" + salt, bytecodeWithArgs);
 
   console.log("Deploying your contract in a user operation...");
   const userOpResponse = await client.sendUserOperation({
