@@ -36,6 +36,7 @@
     "next:serve": "yarn workspace @se-2/nextjs serve",
     "postinstall": "husky",
     "precommit": "lint-staged",
+    "chain": "cd $(git rev-parse --show-toplevel) && npx create-web3-dapp@latest \"$@\"",
     "start": "yarn workspace @se-2/nextjs dev",
     "test": "yarn hardhat:test",
     "vercel": "yarn workspace @se-2/nextjs vercel",
