@@ -22,6 +22,7 @@ import {
   inkMainnet,
   inkSepolia,
 } from "@account-kit/infra";
+import { monadTestnet } from "viem/chains";
 
 export const allChains = [
   // Mainnet chains
@@ -49,6 +50,7 @@ export const allChains = [
   { chain: soneiumMinato, name: "soneium-minato" },
   { chain: opbnbTestnet, name: "opbnb-testnet" },
   { chain: inkSepolia, name: "ink-sepolia" },
+  { chain: monadTestnet, name: "monad-testnet" },
 ];
 
 const chains = Object.fromEntries(
