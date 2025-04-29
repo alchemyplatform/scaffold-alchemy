@@ -2,16 +2,10 @@
   "name": "@scaffold-alchemy/shared",
   "version": "0.0.1",
   "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "check-types": "tsc --noEmit --incremental"
-  },
+  "type": "module",
+  "main": "index.js",
   "dependencies": {
-    "@account-kit/infra": "^4.24.0"
-  },
-  "devDependencies": {
-    "typescript": "^5.0.0"
+    "@account-kit/infra": "^4.24.0",
+    "viem": "^2.26.2"
   }
 }
