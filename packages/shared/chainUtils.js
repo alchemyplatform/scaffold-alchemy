@@ -21,8 +21,8 @@ import {
   opbnbMainnet,
   inkMainnet,
   inkSepolia,
+  monadTestnet,
 } from "@account-kit/infra";
-import { monadTestnet } from "viem/chains";
 
 export const allChains = [
   // Mainnet chains
