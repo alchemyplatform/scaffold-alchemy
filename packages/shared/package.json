@@ -1,0 +1,11 @@
+{
+  "name": "@scaffold-alchemy/shared",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "@account-kit/infra": "^4.24.0",
+    "viem": "^2.26.2"
+  }
+}

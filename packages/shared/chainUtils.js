@@ -22,6 +22,7 @@ import {
   inkMainnet,
   inkSepolia,
 } from "@account-kit/infra";
+import { monadTestnet } from "viem/chains";
 
 export const allChains = [
   // Mainnet chains
@@ -49,17 +50,14 @@ export const allChains = [
   { chain: soneiumMinato, name: "soneium-minato" },
   { chain: opbnbTestnet, name: "opbnb-testnet" },
   { chain: inkSepolia, name: "ink-sepolia" },
+  { chain: monadTestnet, name: "monad-testnet" },
 ];
 
-const chains = Object.fromEntries(allChains.map(({ chain }) => [chain.id, chain]));
+const chains = Object.fromEntries(
+  allChains.map(({ chain }) => [chain.id, chain])
+);
 
-/**
- * Gets a chain configuration by its chain ID
- * @param {string | number} chainId - The chain ID to look up
- * @returns {import("viem").Chain | undefined} The chain configuration if found, undefined otherwise
- */
-export function getChainById(chainId: string | number) {
-  // Convert chainId to string for consistent lookup
+export function getChainById(chainId) {
   const id = chainId.toString();
   return chains[id];
 }

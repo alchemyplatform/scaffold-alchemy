@@ -1,8 +1,8 @@
 // @noErrors
 import scaffoldConfig from "./scaffold.config";
-import { getChainById } from "./utils/scaffold-alchemy/chainUtils";
 import { alchemy } from "@account-kit/infra";
 import { AuthType, cookieStorage, createConfig } from "@account-kit/react";
+import { getChainById } from "@scaffold-alchemy/shared";
 import { QueryClient } from "@tanstack/react-query";
 
 const authSections: AuthType[][] = [[{ type: "email" }], [{ type: "social", authProviderId: "google", mode: "popup" }]];
