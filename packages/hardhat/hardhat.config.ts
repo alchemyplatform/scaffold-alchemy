@@ -54,6 +54,10 @@ const config: HardhatUserConfig = {
         name,
         {
           url: getAlchemyUrl(name),
+          // not really necessary since we're using AA
+          // however, without this, hardhat will make a call out to eth_accounts
+          // which may not be supported for some networks
+          accounts: [hardhatAccount0PrivateKey],
         },
       ]),
     ),
