@@ -17,6 +17,7 @@
     "@account-kit/infra": "^4.24.0",
     "@account-kit/react": "^4.24.0",
     "@heroicons/react": "^2.1.5",
+    "@scaffold-alchemy/shared": "workspace:*",
     "@tanstack/react-query": "^5.64.1",
     "@uniswap/sdk-core": "^5.8.2",
     "@uniswap/v2-sdk": "^4.6.1",

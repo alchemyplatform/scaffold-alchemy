@@ -51,6 +51,7 @@
     "@account-kit/smart-contracts": "^4.12.0",
     "@inquirer/password": "^4.0.2",
     "@openzeppelin/contracts": "^5.0.2",
+    "@scaffold-alchemy/shared": "workspace:*",
     "@typechain/ethers-v6": "^0.5.1",
     "dotenv": "^16.4.5",
     "envfile": "^7.1.0",

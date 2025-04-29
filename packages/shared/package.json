@@ -1,0 +1,17 @@
+{
+  "name": "@scaffold-alchemy/shared",
+  "version": "0.0.1",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "check-types": "tsc --noEmit --incremental"
+  },
+  "dependencies": {
+    "@account-kit/infra": "^4.24.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
