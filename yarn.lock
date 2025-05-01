@@ -4228,7 +4228,7 @@ __metadata:
     "@scaffold-alchemy/shared": "workspace:*"
     "@tanstack/react-query": ^5.64.1
     "@trivago/prettier-plugin-sort-imports": ^4.3.0
-    "@types/node": ^18.19.50
+    "@types/node": ^20.11.24
     "@types/react": ^18.3.5
     "@uniswap/sdk-core": ^5.8.2
     "@uniswap/v2-sdk": ^4.6.1
@@ -5268,12 +5268,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.19.50":
-  version: 18.19.50
-  resolution: "@types/node@npm:18.19.50"
+"@types/node@npm:^20.11.24":
+  version: 20.17.32
+  resolution: "@types/node@npm:20.17.32"
   dependencies:
-    undici-types: ~5.26.4
-  checksum: 73bdd2b46fb96816a1f7309e1b609f0832a29739c87df7daa729ff497160be143e02cf18486a0112e1981b092358aed3ca0716b532aff93c7e05f7dbb4f7586a
+    undici-types: ~6.19.2
+  checksum: fb7bae27fdcca7a5d576e8ffa4e3151c7f6a6c4aefa93bb893f8e193b9f4c3e5ee85b135bdde6d3b197cd2c3848d96695d9664c24cec031b31c79a299ba76293
   languageName: node
   linkType: hard
 
@@ -18417,6 +18417,13 @@ __metadata:
   version: 5.26.5
   resolution: "undici-types@npm:5.26.5"
   checksum: 3192ef6f3fd5df652f2dc1cd782b49d6ff14dc98e5dced492aa8a8c65425227da5da6aafe22523c67f035a272c599bb89cfe803c1db6311e44bed3042fc25487
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~6.19.2":
+  version: 6.19.8
+  resolution: "undici-types@npm:6.19.8"
+  checksum: de51f1b447d22571cf155dfe14ff6d12c5bdaec237c765085b439c38ca8518fc360e88c70f99469162bf2e14188a7b0bcb06e1ed2dc031042b984b0bb9544017
   languageName: node
   linkType: hard
 

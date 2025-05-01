@@ -1,8 +1,7 @@
-import { Chain, createClient, fallback, http } from "viem";
-import { hardhat, mainnet } from "viem/chains";
+import { Chain, createClient, http } from "viem";
+import { mainnet } from "viem/chains";
 import { createConfig } from "wagmi";
-import scaffoldConfig, { DEFAULT_ALCHEMY_API_KEY } from "~~/scaffold.config";
-import { getAlchemyHttpUrl } from "~~/utils/scaffold-alchemy";
+import scaffoldConfig from "~~/scaffold.config";
 
 const { targetNetworks } = scaffoldConfig;
 
@@ -16,23 +15,10 @@ export const wagmiConfig = createConfig({
 
   ssr: true,
   client({ chain }) {
-    let rpcFallbacks = [http()];
-
-    const alchemyHttpUrl = getAlchemyHttpUrl(chain.id);
-    if (alchemyHttpUrl) {
-      const isUsingDefaultKey = scaffoldConfig.alchemyApiKey === DEFAULT_ALCHEMY_API_KEY;
-      // If using default Scaffold-Alchemy API key, we prioritize the default RPC
-      rpcFallbacks = isUsingDefaultKey ? [http(), http(alchemyHttpUrl)] : [http(alchemyHttpUrl), http()];
-    }
-
     return createClient({
       chain,
-      transport: fallback(rpcFallbacks),
-      ...(chain.id !== (hardhat as Chain).id
-        ? {
-            pollingInterval: scaffoldConfig.pollingInterval,
-          }
-        : {}),
+      transport: http("/api/rpc/chain/" + chain.id),
+      pollingInterval: scaffoldConfig.pollingInterval,
     });
   },
 });
