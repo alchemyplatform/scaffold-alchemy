@@ -11,17 +11,14 @@ import "hardhat-deploy-ethers";
 import { task } from "hardhat/config";
 import generateTsAbis from "./scripts/generateTsAbis";
 import cw3dConfig from "./cw3d.config";
-import { allChains } from "@scaffold-alchemy/shared";
+import { ALCHEMY_CONFIG, allChains } from "@scaffold-alchemy/shared";
 
 export const hardhatAccount0PrivateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 
 // If not set, it uses our default API key.
 // You can get your own at https://dashboard.alchemyapi.io
-const DEFAULT_ALCHEMY_API_KEY = "Aau4vg0U-46T4ZI857caO7otLxX3RVSo";
-export const providerApiKey = process.env.ALCHEMY_API_KEY || DEFAULT_ALCHEMY_API_KEY;
-
-const DEFAULT_ALCHEMY_GAS_POLICY_ID = "f0d2920d-b0dc-4e55-ab21-2fcb483bc293";
-export const gasPolicyId = process.env.ALCHEMY_GAS_POLICY_ID || DEFAULT_ALCHEMY_GAS_POLICY_ID;
+export const providerApiKey = process.env.ALCHEMY_API_KEY || ALCHEMY_CONFIG.DEFAULT_ALCHEMY_API_KEY;
+export const gasPolicyId = process.env.ALCHEMY_GAS_POLICY_ID || ALCHEMY_CONFIG.DEFAULT_ALCHEMY_GAS_POLICY_ID;
 
 const getAlchemyUrl = (name: string) => `https://${name}.g.alchemy.com/v2/${providerApiKey}`;
 

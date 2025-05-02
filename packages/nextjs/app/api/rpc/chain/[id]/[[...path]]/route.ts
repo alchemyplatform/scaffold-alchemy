@@ -1,7 +1,4 @@
-import { getChainById } from "@scaffold-alchemy/shared";
-
-const DEFAULT_ALCHEMY_GAS_POLICY_ID = "f0d2920d-b0dc-4e55-ab21-2fcb483bc293";
-const DEFAULT_ALCHEMY_API_KEY = "Aau4vg0U-46T4ZI857caO7otLxX3RVSo";
+import { ALCHEMY_CONFIG, getChainById } from "@scaffold-alchemy/shared";
 
 export async function POST(req: Request, { params }: { params: { id: string; path: string[] } }) {
   const { id, path } = params;
@@ -13,7 +10,7 @@ export async function POST(req: Request, { params }: { params: { id: string; pat
   }
   const rpcUrl = chain.rpcUrls.alchemy.http[0];
 
-  const apiKey = process.env.ALCHEMY_API_KEY || DEFAULT_ALCHEMY_API_KEY;
+  const apiKey = process.env.ALCHEMY_API_KEY || ALCHEMY_CONFIG.DEFAULT_API_KEY;
   if (!apiKey) {
     return new Response("ALCHEMY_API_KEY is not set", {
       status: 500,
@@ -31,9 +28,7 @@ export async function POST(req: Request, { params }: { params: { id: string; pat
     }
 
     if (body.method === "alchemy_requestGasAndPaymasterAndData") {
-      console.log(body.params);
-      body.params[0].policyId = process.env.GAS_MANAGER_POLICY_ID || DEFAULT_ALCHEMY_GAS_POLICY_ID;
-      console.log(body.params);
+      body.params[0].policyId = process.env.GAS_MANAGER_POLICY_ID || ALCHEMY_CONFIG.DEFAULT_GAS_POLICY_ID;
     }
 
     const apiResponse = await fetch(combinedPath, {
@@ -45,18 +40,12 @@ export async function POST(req: Request, { params }: { params: { id: string; pat
       body: JSON.stringify(body),
     });
 
-    const data = await apiResponse.json();
+    const json = await apiResponse.json();
     const headers = new Headers(apiResponse.headers);
-    const originalSetCookie = headers.get("set-cookie");
-    headers.delete("content-encoding");
     headers.delete("transfer-encoding");
-    headers.set("Content-Type", "application/json");
-    if (originalSetCookie) {
-      const rewritten = originalSetCookie.replace(/;?\s*Secure/gi, "").replace(/;?\s*SameSite=None/gi, "");
-      headers.set("Set-Cookie", rewritten);
-    }
-
-    return new Response(JSON.stringify(data), {
+    headers.delete("content-encoding");
+    headers.delete("content-length");
+    return new Response(JSON.stringify(json), {
       status: apiResponse.status,
       headers,
     });
