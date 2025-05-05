@@ -48,6 +48,8 @@ export async function deployWithAA(
   const userOpHash = userOpResponse.hash;
   console.log("User operation:", userOpHash);
 
+  const blockExplorer = chain.blockExplorers?.default;
+
   const transactionHash = await client.waitForUserOperationTransaction({
     hash: userOpHash,
     retries: {
@@ -56,7 +58,9 @@ export async function deployWithAA(
       maxRetries: 10,
     },
   });
-  console.log("Transaction:", transactionHash);
+
+  const txInfo = blockExplorer ? `${blockExplorer.url}/tx/${transactionHash}` : transactionHash;
+  console.log("Transaction:", txInfo);
 
   await hre.deployments.save(contractName, {
     abi: factory.interface.fragments.map(fragment => {
@@ -81,6 +85,9 @@ export async function deployWithAA(
     bytecode: factory.bytecode,
     deployedBytecode: await provider.getCode(deployedAddress),
   });
+
+  const addressInfo = blockExplorer ? `${blockExplorer.url}/address/${deployedAddress}` : deployedAddress;
+  console.log("Deployed To:", addressInfo);
 
   return deployedAddress;
 }
