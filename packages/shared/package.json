@@ -3,7 +3,19 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "main": "index.js",
-  "types": "index.d.ts",
-  "dependencies": {}
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "yarn exec tsc",
+    "clean": "rm -rf dist",
+    "dev": "yarn exec tsc --watch"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
 }

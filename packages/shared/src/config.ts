@@ -1,4 +1,6 @@
 export const ALCHEMY_CONFIG = {
   DEFAULT_GAS_POLICY_ID: "f0d2920d-b0dc-4e55-ab21-2fcb483bc293",
   DEFAULT_API_KEY: "Aau4vg0U-46T4ZI857caO7otLxX3RVSo",
-};
+} as const;
+
+export type AlchemyConfig = typeof ALCHEMY_CONFIG;
