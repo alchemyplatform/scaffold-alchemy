@@ -4,7 +4,7 @@ import { getAccountKitClient } from "./getAccountKitClient";
 import { randomBytes } from "crypto";
 import { ethers } from "ethers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-
+import { Chain } from "viem";
 export async function deployWithAA(
   factory: ethers.ContractFactory,
   contractName: string,
@@ -13,7 +13,10 @@ export async function deployWithAA(
 ) {
   const provider = hre.ethers.provider;
   const chainId = (await provider.getNetwork()).chainId.toString();
-  const chain = getChainById(chainId);
+  const chain = getChainById(chainId) as Chain;
+  if (!chain) {
+    throw new Error(`Chain with id ${chainId} not found`);
+  }
   const client = await getAccountKitClient(chain);
 
   // A CREATE2 Deployer
