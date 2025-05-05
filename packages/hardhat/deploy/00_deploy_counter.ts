@@ -14,7 +14,6 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
 
   // use account abstraction to deploy the contract, with the gas sponsored for us!
   const counterAddress = await deployWithAA(factory, CONTRACT_NAME, hre, [3]);
-  console.log("👋 Counter deployed to:", counterAddress);
 
   const counter = await hre.ethers.getContractAt(CONTRACT_NAME, counterAddress);
   console.log("👋 Initial value of x:", await counter.x());
