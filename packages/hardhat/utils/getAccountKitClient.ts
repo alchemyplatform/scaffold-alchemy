@@ -2,7 +2,7 @@ import "dotenv/config";
 import { alchemy, createAlchemySmartAccountClient } from "@account-kit/infra";
 import { createLightAccount } from "@account-kit/smart-contracts";
 import { LocalAccountSigner } from "@aa-sdk/core";
-import type { Chain, Hex } from "viem";
+import type { Hex, Chain } from "viem";
 import { gasPolicyId, hardhatAccount0PrivateKey, providerApiKey } from "../hardhat.config";
 
 const signingKey = (process.env.SIGNING_KEY || hardhatAccount0PrivateKey) as Hex;

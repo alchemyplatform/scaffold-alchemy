@@ -4,9 +4,6 @@
   "private": true,
   "type": "module",
   "main": "index.js",
-  "types": "chainUtils.d.ts",
-  "dependencies": {
-    "@account-kit/infra": "^4.24.0",
-    "viem": "^2.26.2"
-  }
+  "types": "index.d.ts",
+  "dependencies": {}
 }

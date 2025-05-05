@@ -9,12 +9,9 @@ if (!chain) {
 export type ScaffoldConfig = {
   targetNetworks: readonly chains.Chain[];
   pollingInterval: number;
-  alchemyApiKey: string;
   walletConnectProjectId: string;
   expectedUserOpTime: number;
 };
-
-export const DEFAULT_ALCHEMY_API_KEY = "Aau4vg0U-46T4ZI857caO7otLxX3RVSo";
 
 const scaffoldConfig = {
   // The networks on which your DApp is live
@@ -23,12 +20,6 @@ const scaffoldConfig = {
   // The interval at which your front-end polls the RPC servers for new data
   // it has no effect if you only target the local network (default is 4000)
   pollingInterval: 30000,
-
-  // This is a default API key.
-  // You can get your own at https://dashboard.alchemyapi.io
-  // It's recommended to store it in an env variable:
-  // .env.local for local testing, and in the Vercel/system env config for live apps.
-  alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || DEFAULT_ALCHEMY_API_KEY,
 
   // This is the expected time it takes for a user operation to be included in a block.
   // This is used to calculate the progress of the transaction.
