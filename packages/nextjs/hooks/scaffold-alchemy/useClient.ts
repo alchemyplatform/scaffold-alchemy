@@ -10,7 +10,7 @@ export const useClient = (
   },
 ) => {
   const alchemy = new Alchemy({
-    apiKey: scaffoldConfig.alchemyApiKey,
+    url: "/api/rpc/chain/" + scaffoldConfig.targetNetworks[0].id,
     network: RPC_CHAIN_NAMES[scaffoldConfig.targetNetworks[0].id] as Network,
   });
   const enhancedApiDecorator = alchemyEnhancedApiActions(alchemy);

@@ -1,9 +1,9 @@
-import cw3dConfig from "./cw3d.config";
+import { chainConfig } from "@scaffold-alchemy/shared";
 import * as chains from "viem/chains";
 
-const chain = Object.values(chains).find(chain => chain.id === cw3dConfig.testnetChainId);
+const chain = Object.values(chains).find(chain => chain.id === chainConfig.testnetChainId);
 if (!chain) {
-  throw new Error(`Chain with ID ${cw3dConfig.testnetChainId} not found`);
+  throw new Error(`Chain with ID ${chainConfig.testnetChainId} not found`);
 }
 
 export type ScaffoldConfig = {

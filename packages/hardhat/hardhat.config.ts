@@ -10,8 +10,7 @@ import "hardhat-deploy";
 import "hardhat-deploy-ethers";
 import { task } from "hardhat/config";
 import generateTsAbis from "./scripts/generateTsAbis";
-import cw3dConfig from "./cw3d.config";
-import { ALCHEMY_CONFIG, allChains } from "@scaffold-alchemy/shared";
+import { ALCHEMY_CONFIG, allChains, chainConfig } from "@scaffold-alchemy/shared";
 
 export const hardhatAccount0PrivateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 
@@ -39,7 +38,7 @@ const config: HardhatUserConfig = {
   },
   // feel free to manually change this to any network in the chainUtils.ts file
   // use the name in any of those objects as you need
-  defaultNetwork: cw3dConfig.testnetChainName,
+  defaultNetwork: chainConfig.testnetChainName,
   namedAccounts: {
     deployer: {
       default: 0,

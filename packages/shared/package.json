@@ -12,9 +12,9 @@
   "scripts": {
     "build": "yarn exec tsc",
     "clean": "rm -rf dist",
-    "dev": "yarn exec tsc --watch"
+    "dev": "yarn exec tsc --watch",
+    "prepare": "yarn build"
   },
-  "dependencies": {},
   "devDependencies": {
     "typescript": "^5.0.0"
   }
