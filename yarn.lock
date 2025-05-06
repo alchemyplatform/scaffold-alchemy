@@ -16601,7 +16601,6 @@ __metadata:
   dependencies:
     "@aa-sdk/core": ^4.24.0
     "@account-kit/infra": ^4.24.0
-    "@account-kit/react": ^4.24.0
     "@account-kit/smart-contracts": ^4.24.0
     husky: ^9.1.6
     lint-staged: ^15.2.10

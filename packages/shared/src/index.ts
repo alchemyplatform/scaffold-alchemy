@@ -1,3 +1,3 @@
-export * from "./chainUtils";
-export * from "./config";
-export * from "./cw3d.config";
+export * from "./chainUtils.js";
+export * from "./config.js";
+export * from "./cw3d.config.js";

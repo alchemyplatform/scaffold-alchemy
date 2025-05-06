@@ -9,12 +9,12 @@ export const useClient = (
     type: "LightAccount",
   },
 ) => {
+  const { client, address } = useSmartAccountClient(config);
   const alchemy = new Alchemy({
-    url: "/api/rpc/chain/" + scaffoldConfig.targetNetworks[0].id,
+    url: client?.transport.alchemyRpcUrl,
     network: RPC_CHAIN_NAMES[scaffoldConfig.targetNetworks[0].id] as Network,
   });
   const enhancedApiDecorator = alchemyEnhancedApiActions(alchemy);
-  const { client, address } = useSmartAccountClient(config);
   return { client: client?.extend(enhancedApiDecorator), origClient: client, address };
 };
 
