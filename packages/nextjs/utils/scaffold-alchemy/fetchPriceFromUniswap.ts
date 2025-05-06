@@ -1,14 +1,13 @@
-import { ChainWithAttributes, getAlchemyHttpUrl } from "./networks";
+import { ChainWithAttributes } from "./networks";
 import { CurrencyAmount, Token } from "@uniswap/sdk-core";
 import { Pair, Route } from "@uniswap/v2-sdk";
 import { Address, createPublicClient, fallback, http, parseAbi } from "viem";
 import { mainnet } from "viem/chains";
 
-const alchemyHttpUrl = getAlchemyHttpUrl(mainnet.id);
-const rpcFallbacks = alchemyHttpUrl ? [http(alchemyHttpUrl), http()] : [http()];
+const alchemyHttpUrl = "/api/rpc/chain/" + mainnet.id;
 const publicClient = createPublicClient({
   chain: mainnet,
-  transport: fallback(rpcFallbacks),
+  transport: fallback([http(alchemyHttpUrl), http()]),
 });
 
 const ABI = parseAbi([

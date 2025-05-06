@@ -23,8 +23,14 @@ import {
   inkSepolia,
   monadTestnet,
 } from "@account-kit/infra";
+import { Chain } from "viem";
 
-export const allChains = [
+export interface ChainInfo {
+  chain: Chain;
+  name: string;
+}
+
+export const allChains: ChainInfo[] = [
   // Mainnet chains
   { chain: mainnet, name: "eth-mainnet" },
   { chain: arbitrum, name: "arb-mainnet" },
@@ -57,7 +63,7 @@ const chains = Object.fromEntries(
   allChains.map(({ chain }) => [chain.id, chain])
 );
 
-export function getChainById(chainId) {
+export function getChainById(chainId: number | string): Chain | undefined {
   const id = chainId.toString();
   return chains[id];
 }
