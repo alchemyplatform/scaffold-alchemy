@@ -10,7 +10,7 @@ export async function POST(req: Request, { params }: { params: { id: string; pat
   }
   const rpcUrl = chain.rpcUrls.alchemy.http[0];
 
-  const apiKey = process.env.ALCHEMY_API_KEY || ALCHEMY_CONFIG.DEFAULT_API_KEY;
+  const apiKey = ALCHEMY_CONFIG.ALCHEMY_API_KEY;
   if (!apiKey) {
     return new Response("ALCHEMY_API_KEY is not set", {
       status: 500,
@@ -28,7 +28,7 @@ export async function POST(req: Request, { params }: { params: { id: string; pat
     }
 
     if (body.method === "alchemy_requestGasAndPaymasterAndData") {
-      body.params[0].policyId = process.env.GAS_MANAGER_POLICY_ID || ALCHEMY_CONFIG.DEFAULT_GAS_POLICY_ID;
+      body.params[0].policyId = ALCHEMY_CONFIG.ALCHEMY_GAS_POLICY_ID;
     }
 
     const apiResponse = await fetch(combinedPath, {

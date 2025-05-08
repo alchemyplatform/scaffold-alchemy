@@ -13,11 +13,8 @@ import generateTsAbis from "./scripts/generateTsAbis";
 import { ALCHEMY_CONFIG, allChains, chainConfig } from "@scaffold-alchemy/shared";
 
 export const hardhatAccount0PrivateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
-
-// If not set, it uses our default API key.
-// You can get your own at https://dashboard.alchemyapi.io
-export const providerApiKey = process.env.ALCHEMY_API_KEY || ALCHEMY_CONFIG.DEFAULT_API_KEY;
-export const gasPolicyId = process.env.ALCHEMY_GAS_POLICY_ID || ALCHEMY_CONFIG.DEFAULT_GAS_POLICY_ID;
+export const providerApiKey = ALCHEMY_CONFIG.ALCHEMY_API_KEY;
+export const gasPolicyId = ALCHEMY_CONFIG.ALCHEMY_GAS_POLICY_ID;
 
 const getAlchemyUrl = (name: string) => `https://${name}.g.alchemy.com/v2/${providerApiKey}`;
 
