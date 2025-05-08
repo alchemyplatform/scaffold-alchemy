@@ -11,7 +11,8 @@
   },
   "scripts": {
     "compile": "yarn hardhat:compile",
-    "deploy": "yarn hardhat:deploy",
+    "deploy": "node packages/hardhat/chainDeploy",
+    "deploy:mainnet": "node packages/hardhat/chainDeploy -mainnet",
     "fork": "yarn hardhat:fork",
     "format": "yarn next:format && yarn hardhat:format",
     "generate": "yarn account:generate",

@@ -1,9 +1,10 @@
 import { chainConfig } from "@scaffold-alchemy/shared";
 import * as chains from "viem/chains";
 
-const chain = Object.values(chains).find(chain => chain.id === chainConfig.testnetChainId);
+const chainId = process.env.NODE_ENV === "production" ? chainConfig.mainnetChainId : chainConfig.testnetChainId;
+const chain = Object.values(chains).find(chain => chain.id === chainId);
 if (!chain) {
-  throw new Error(`Chain with ID ${chainConfig.testnetChainId} not found`);
+  throw new Error(`Chain with ID ${chainId} not found`);
 }
 
 export type ScaffoldConfig = {

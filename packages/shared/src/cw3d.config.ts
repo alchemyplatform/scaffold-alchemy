@@ -8,7 +8,7 @@ export type CW3DConfig = {
 };
 
 export const chainConfig = {
-  mainnetName: "shape",
+  mainnetName: "shape-mainnet",
   mainnetChainId: 360,
   testnetChainId: 11011,
   testnetChainName: "shape-sepolia",
