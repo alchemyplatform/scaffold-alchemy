@@ -7,7 +7,8 @@ import {
   optimism,
   optimismSepolia,
   polygon,
-  polygonMumbai,
+  polygonMumbai, // deprecated
+  polygonAmoy,
   sepolia,
   worldChain,
   worldChainSepolia,
@@ -36,7 +37,7 @@ export const allChains: ChainInfo[] = [
   { chain: arbitrum, name: "arb-mainnet" },
   { chain: optimism, name: "opt-mainnet" },
   { chain: base, name: "base-mainnet" },
-  { chain: polygon, name: "polygon-mainnet" },
+  { chain: polygon, name: "polygon(pos)-mainnet" },
   { chain: worldChain, name: "worldchain-mainnet" },
   { chain: shape, name: "shape-mainnet" },
   { chain: unichainMainnet, name: "unichain-mainnet" },
@@ -49,7 +50,8 @@ export const allChains: ChainInfo[] = [
   { chain: arbitrumSepolia, name: "arb-sepolia" },
   { chain: optimismSepolia, name: "opt-sepolia" },
   { chain: baseSepolia, name: "base-sepolia" },
-  { chain: polygonMumbai, name: "polygon-mumbai" },
+  { chain: polygonMumbai, name: "polygon-mumbai" }, // deprecated
+  { chain: polygonAmoy, name: "polygon(pos)-amoy" },
   { chain: worldChainSepolia, name: "worldchain-sepolia" },
   { chain: shapeSepolia, name: "shape-sepolia" },
   { chain: unichainSepolia, name: "unichain-sepolia" },

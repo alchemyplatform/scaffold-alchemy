@@ -90,10 +90,18 @@ export const useTransactor = (): TransactionFunc => {
         <TxnNotification message="Waiting for transaction to complete." blockExplorerLink={blockExplorerTxURL} />,
       );
 
-      transactionReceipt = await publicClient.waitForTransactionReceipt({
+      const rawReceipt = await publicClient.waitForTransactionReceipt({
         hash: transactionHash,
         confirmations: options?.blockConfirmations,
       });
+
+      transactionReceipt = {
+        ...rawReceipt,
+        logs: rawReceipt.logs.map(log => ({
+          ...log,
+          blockHash: log.blockHash || "", // Ensure blockHash is not null
+        })),
+      } as TransactionReceipt;
       notification.remove(notificationId);
 
       if (transactionReceipt.status === "reverted") throw new Error("Transaction reverted");
