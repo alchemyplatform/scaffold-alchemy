@@ -6,7 +6,7 @@ import { RPC_CHAIN_NAMES } from "~~/utils/scaffold-alchemy";
 
 export const useClient = (
   config: UseSmartAccountClientProps = {
-    type: "LightAccount",
+    type: "MultiOwnerModularAccount",
   },
 ) => {
   const { client, address } = useSmartAccountClient(config);

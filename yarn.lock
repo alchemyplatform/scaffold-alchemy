@@ -18,19 +18,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aa-sdk/core@npm:^4.32.0":
-  version: 4.32.0
-  resolution: "@aa-sdk/core@npm:4.32.0"
-  dependencies:
-    abitype: ^0.8.3
-    eventemitter3: ^5.0.1
-    zod: ^3.22.4
-  peerDependencies:
-    viem: ^2.22.6
-  checksum: 7704f6605d7dec51958b1c014e64492a27831afb791ab4850de4903870fdcf7b4934b6e5105231a2d4d54bfc35515e5a945073bf8f8884653fdb3b2744e48a56
-  languageName: node
-  linkType: hard
-
 "@account-kit/core@npm:^4.31.0":
   version: 4.31.0
   resolution: "@account-kit/core@npm:4.31.0"
@@ -83,11 +70,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@account-kit/plugingen@npm:^4.24.0":
-  version: 4.32.0
-  resolution: "@account-kit/plugingen@npm:4.32.0"
+"@account-kit/plugingen@npm:4.24.0":
+  version: 4.24.0
+  resolution: "@account-kit/plugingen@npm:4.24.0"
   dependencies:
-    "@aa-sdk/core": ^4.32.0
+    "@aa-sdk/core": ^4.24.0
     bundle-require: ^4.0.2
     cac: ^6.7.14
     change-case: ^5.4.3
@@ -105,7 +92,7 @@ __metadata:
     viem: ^2.22.6
   bin:
     plugingen: dist/esm/cli.js
-  checksum: 1fd6ed2d8bfddc3e64e9b8dd95b70c112f2a447143e42459099331b6d35a08ba907a7cdeb699de15dacec97e4bc29689b25fd4cdf23c3463c336f8b7f5c21b05
+  checksum: c4e692bf047363cee1a25b94584ab6925d7926ebe9ed055e577b7196566056585fd4318917a1e7e6a5bc8ccd6d6a60039afa7d32d4d1be8437e28a1dd471850c
   languageName: node
   linkType: hard
 
@@ -17037,7 +17024,7 @@ __metadata:
   dependencies:
     "@aa-sdk/core": ^4.24.0
     "@account-kit/infra": ^4.24.0
-    "@account-kit/plugingen": ^4.24.0
+    "@account-kit/plugingen": 4.24.0
     "@account-kit/smart-contracts": ^4.24.0
     husky: ^9.1.6
     lint-staged: ^15.2.10
