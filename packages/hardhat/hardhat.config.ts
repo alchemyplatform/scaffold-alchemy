@@ -10,11 +10,12 @@ import "hardhat-deploy";
 import "hardhat-deploy-ethers";
 import { task } from "hardhat/config";
 import generateTsAbis from "./scripts/generateTsAbis";
-import { ALCHEMY_CONFIG, allChains, chainConfig } from "@scaffold-alchemy/shared";
+import { allChains } from "./utils/chainUtils";
+import { ALCHEMY_API_KEY, ALCHEMY_GAS_POLICY_ID, chainConfig } from "./utils/loadCommon";
 
 export const hardhatAccount0PrivateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
-export const providerApiKey = ALCHEMY_CONFIG.ALCHEMY_API_KEY;
-export const gasPolicyId = ALCHEMY_CONFIG.ALCHEMY_GAS_POLICY_ID;
+export const providerApiKey = ALCHEMY_API_KEY;
+export const gasPolicyId = ALCHEMY_GAS_POLICY_ID;
 
 const getAlchemyUrl = (name: string) => `https://${name}.g.alchemy.com/v2/${providerApiKey}`;
 
