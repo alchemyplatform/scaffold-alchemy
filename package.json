@@ -45,12 +45,6 @@
     "verify": "yarn hardhat:verify"
   },
   "packageManager": "yarn@3.2.3",
-  "dependencies": {
-    "@aa-sdk/core": "^4.24.0",
-    "@account-kit/infra": "^4.24.0",
-    "@account-kit/smart-contracts": "^4.24.0",
-    "viem": "2.28.4"
-  },
   "devDependencies": {
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
