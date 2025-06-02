@@ -37,7 +37,7 @@
     "next:serve": "yarn workspace @scaffold-alchemy/nextjs serve",
     "postinstall": "husky",
     "precommit": "lint-staged",
-    "chain": "npx create-web3-dapp@latest \"$@\"",
+    "chain": "node common/script/chain.js \"$@\"",
     "start": "yarn workspace @scaffold-alchemy/nextjs dev",
     "test": "yarn hardhat:test",
     "vercel": "yarn workspace @scaffold-alchemy/nextjs vercel",
