@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { CHAIN_CONFIGS } = require("./chainOptions");
+const chainConfigs = require("../chainOptions.json");
 
 // Parse command line arguments
 const args = process.argv.slice(2);
@@ -13,7 +13,7 @@ if (chainIndex === -1 || !args[chainIndex + 1]) {
 const chainShortName = args[chainIndex + 1];
 
 // Find the chain configuration
-const chainConfig = CHAIN_CONFIGS.find(
+const chainConfig = chainConfigs.find(
   (chain) => chain.shortName === chainShortName
 );
 
