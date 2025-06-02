@@ -4,6 +4,163 @@
  */
 import { GenericContractsDeclaration } from "~~/utils/scaffold-alchemy/contract";
 
-const deployedContracts = {} as const;
+const deployedContracts = {
+  360: {
+    Counter: {
+      address: "0x9f814f0c5b38752fe06f07c4c7057866a792c338",
+      abi: [
+        {
+          type: "constructor",
+          stateMutability: "nonpayable",
+          inputs: [
+            {
+              name: "_x",
+              type: "uint256",
+              baseType: "uint256",
+              components: null,
+              arrayLength: null,
+              arrayChildren: null,
+            },
+          ],
+        },
+        {
+          type: "function",
+          name: "decrement",
+          stateMutability: "nonpayable",
+          inputs: [],
+          outputs: [],
+        },
+        {
+          type: "function",
+          name: "increment",
+          stateMutability: "nonpayable",
+          inputs: [],
+          outputs: [],
+        },
+        {
+          type: "function",
+          name: "x",
+          stateMutability: "view",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              baseType: "uint256",
+              components: null,
+              arrayLength: null,
+              arrayChildren: null,
+            },
+          ],
+        },
+      ],
+      inheritedFunctions: {},
+    },
+  },
+  11011: {
+    Counter: {
+      address: "0xf8b8843c1443d56a9db5c7017b25e36be6e57679",
+      abi: [
+        {
+          type: "constructor",
+          stateMutability: "nonpayable",
+          inputs: [
+            {
+              name: "_x",
+              type: "uint256",
+              baseType: "uint256",
+              components: null,
+              arrayLength: null,
+              arrayChildren: null,
+            },
+          ],
+        },
+        {
+          type: "function",
+          name: "decrement",
+          stateMutability: "nonpayable",
+          inputs: [],
+          outputs: [],
+        },
+        {
+          type: "function",
+          name: "increment",
+          stateMutability: "nonpayable",
+          inputs: [],
+          outputs: [],
+        },
+        {
+          type: "function",
+          name: "x",
+          stateMutability: "view",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              baseType: "uint256",
+              components: null,
+              arrayLength: null,
+              arrayChildren: null,
+            },
+          ],
+        },
+      ],
+      inheritedFunctions: {},
+    },
+  },
+  11155111: {
+    Counter: {
+      address: "0xff1c718b921a774b34f49822223e7daab6f31920",
+      abi: [
+        {
+          type: "constructor",
+          stateMutability: "nonpayable",
+          inputs: [
+            {
+              name: "_x",
+              type: "uint256",
+              baseType: "uint256",
+              components: null,
+              arrayLength: null,
+              arrayChildren: null,
+            },
+          ],
+        },
+        {
+          type: "function",
+          name: "decrement",
+          stateMutability: "nonpayable",
+          inputs: [],
+          outputs: [],
+        },
+        {
+          type: "function",
+          name: "increment",
+          stateMutability: "nonpayable",
+          inputs: [],
+          outputs: [],
+        },
+        {
+          type: "function",
+          name: "x",
+          stateMutability: "view",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              baseType: "uint256",
+              components: null,
+              arrayLength: null,
+              arrayChildren: null,
+            },
+          ],
+        },
+      ],
+      inheritedFunctions: {},
+    },
+  },
+} as const;
 
 export default deployedContracts satisfies GenericContractsDeclaration;

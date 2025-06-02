@@ -1,5 +1,5 @@
 import { calculateCreate2Address } from "./calculateCreate2Address";
-import { getChainById } from "@scaffold-alchemy/shared";
+import { getChainById } from "./chainUtils";
 import { getAccountKitClient } from "./getAccountKitClient";
 import { randomBytes } from "crypto";
 import { ethers } from "ethers";

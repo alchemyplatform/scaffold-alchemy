@@ -4,8 +4,8 @@ import { getPublicClient } from "@wagmi/core";
 import { Hash, TransactionReceipt } from "viem";
 import { Config } from "wagmi";
 import { SendTransactionMutate } from "wagmi/query";
+import { config } from "~~/account.config";
 import scaffoldConfig from "~~/scaffold.config";
-import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 import { getBlockExplorerTxLink, getParsedError, notification } from "~~/utils/scaffold-alchemy";
 import { TransactorFuncOptions } from "~~/utils/scaffold-alchemy/contract";
 
@@ -68,7 +68,7 @@ export const useTransactor = (): TransactionFunc => {
     try {
       const network = chain.id;
       // Get full transaction from public client
-      const publicClient = getPublicClient(wagmiConfig);
+      const publicClient = getPublicClient(config._internal.wagmiConfig);
 
       notificationId = notification.loading(<TxnNotification message="Sending transaction..." />);
       if (typeof tx === "function") {

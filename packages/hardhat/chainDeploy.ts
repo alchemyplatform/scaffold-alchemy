@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const { execSync } = require("child_process");
-const { chainConfig } = require("@scaffold-alchemy/shared");
+import { execSync } from "child_process";
+import { chainConfig } from "./utils/loadCommon";
 
 // Parse command line arguments
 const args = process.argv.slice(2);

@@ -3,25 +3,25 @@ import {
   arbitrumSepolia,
   base,
   baseSepolia,
+  inkMainnet,
+  inkSepolia,
   mainnet,
+  monadTestnet,
+  opbnbMainnet,
+  opbnbTestnet,
   optimism,
   optimismSepolia,
   polygon,
   polygonMumbai,
   sepolia,
-  worldChain,
-  worldChainSepolia,
   shape,
   shapeSepolia,
+  soneiumMainnet,
+  soneiumMinato,
   unichainMainnet,
   unichainSepolia,
-  soneiumMinato,
-  soneiumMainnet,
-  opbnbTestnet,
-  opbnbMainnet,
-  inkMainnet,
-  inkSepolia,
-  monadTestnet,
+  worldChain,
+  worldChainSepolia,
 } from "@account-kit/infra";
 import { Chain } from "viem";
 
@@ -59,9 +59,7 @@ export const allChains: ChainInfo[] = [
   { chain: monadTestnet, name: "monad-testnet" },
 ];
 
-const chains = Object.fromEntries(
-  allChains.map(({ chain }) => [chain.id, chain])
-);
+const chains = Object.fromEntries(allChains.map(({ chain }) => [chain.id, chain]));
 
 export function getChainById(chainId: number | string): Chain | undefined {
   const id = chainId.toString();
