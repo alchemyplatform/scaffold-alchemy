@@ -69,6 +69,9 @@ export const useTransactor = (): TransactionFunc => {
       const network = chain.id;
       // Get full transaction from public client
       const publicClient = getPublicClient(config._internal.wagmiConfig);
+      if (!publicClient) {
+        throw new Error("Public client not found");
+      }
 
       notificationId = notification.loading(<TxnNotification message="Sending transaction..." />);
       if (typeof tx === "function") {
