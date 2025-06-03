@@ -1,11 +1,9 @@
+import chainConfig from "./config/chainConfig.json";
 import * as chains from "viem/chains";
 
 const isProd = process.env.NODE_ENV === "production";
 const simulateProd = process.env.NEXT_PUBLIC_SIMULATE_PROD === "true";
-const chainId =
-  isProd || simulateProd
-    ? Number(process.env.NEXT_PUBLIC_MAINNET_CHAIN_ID)
-    : Number(process.env.NEXT_PUBLIC_TESTNET_CHAIN_ID);
+const chainId = isProd || simulateProd ? chainConfig.mainnetChainId : chainConfig.testnetChainId;
 const chain = Object.values(chains).find(chain => chain.id === chainId);
 if (!chain) {
   throw new Error(`Chain with ID ${chainId} not found`);
