@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import path from "path";
-import chainConfigJson from "../../../common/chainConfig.json";
-import defaultKeysJson from "../../../common/defaultKeys.json";
+import chainConfigJson from "../config/chainConfig.json";
+import defaultKeysJson from "../config/defaultKeys.json";
 
 // local .env takes precedence
 const workspaceEnvPath = path.resolve(process.cwd(), ".env");
