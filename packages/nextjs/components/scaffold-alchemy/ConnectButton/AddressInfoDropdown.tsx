@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useRef, useState } from "react";
 import { NetworkOptions } from "./NetworkOptions";
 import { useLogout } from "@account-kit/react";
@@ -12,9 +14,10 @@ import {
   ChevronDownIcon,
   DocumentDuplicateIcon,
   QrCodeIcon,
+  ShieldCheckIcon, //feature_1
 } from "@heroicons/react/24/outline";
 import { BlockieAvatar, isENS } from "~~/components/scaffold-alchemy";
-import { useOutsideClick } from "~~/hooks/scaffold-alchemy";
+import { useOutsideClick, useAccountType } from "~~/hooks/scaffold-alchemy";
 import { getTargetNetworks } from "~~/utils/scaffold-alchemy";
 
 const allowedNetworks = getTargetNetworks();
@@ -34,6 +37,7 @@ export const AddressInfoDropdown = ({
 }: AddressInfoDropdownProps) => {
   const checkSumAddress = getAddress(address);
   const { logout } = useLogout();
+  const { accountType } = useAccountType(); //Feature_1
 
   const [addressCopied, setAddressCopied] = useState(false);
 
@@ -107,6 +111,17 @@ export const AddressInfoDropdown = ({
                 View on Block Explorer
               </a>
             </button>
+          </li>
+          <li className={selectingNetwork ? "hidden" : ""}>
+            <div className="btn-sm !rounded-xl flex gap-3 py-3 px-4 cursor-default hover:bg-base-200">
+              <ShieldCheckIcon className="h-6 w-4" />
+              <span className="whitespace-nowrap font-medium">
+                {accountType === "EOA" && "Upgrade to SCA"}
+                {accountType === "EOA_7702" && "Already a 7702 + EOA"}
+                {accountType === "SCA_4337" && "Already a 4337 - SCA"}
+                {accountType === "UNKNOWN" && "Detecting account type..."}
+              </span>
+            </div>
           </li>
           {allowedNetworks.length > 1 ? (
             <li className={selectingNetwork ? "hidden" : ""}>
