@@ -17,7 +17,7 @@ import {
   ShieldCheckIcon, //feature_1
 } from "@heroicons/react/24/outline";
 import { BlockieAvatar, isENS } from "~~/components/scaffold-alchemy";
-import { useOutsideClick, useAccountType } from "~~/hooks/scaffold-alchemy";
+import { useOutsideClick, useAccountType } from "~~/hooks/scaffold-alchemy"; // 'useAccountType' is feature_1
 import { getTargetNetworks } from "~~/utils/scaffold-alchemy";
 
 const allowedNetworks = getTargetNetworks();
