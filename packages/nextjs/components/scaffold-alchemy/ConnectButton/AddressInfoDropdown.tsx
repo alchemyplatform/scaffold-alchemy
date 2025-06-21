@@ -17,7 +17,7 @@ import {
   ShieldCheckIcon, //feature_1
 } from "@heroicons/react/24/outline";
 import { BlockieAvatar, isENS } from "~~/components/scaffold-alchemy";
-import { useOutsideClick, useAccountType } from "~~/hooks/scaffold-alchemy";
+import { useOutsideClick, useAccountType } from "~~/hooks/scaffold-alchemy"; // 'useAccountType' is feature_1
 import { getTargetNetworks } from "~~/utils/scaffold-alchemy";
 
 const allowedNetworks = getTargetNetworks();
@@ -116,9 +116,9 @@ export const AddressInfoDropdown = ({
             <div className="btn-sm !rounded-xl flex gap-3 py-3 px-4 cursor-default hover:bg-base-200">
               <ShieldCheckIcon className="h-6 w-4" />
               <span className="whitespace-nowrap font-medium">
-                {accountType === "EOA" && "Upgrade to SCA"}
-                {accountType === "EOA_7702" && "Already a 7702 + EOA"}
-                {accountType === "SCA_4337" && "Already a 4337 - SCA"}
+                {accountType === "EOA" && "Upgrade to a Smart Wallet"}
+                {accountType === "EOA_7702" && "This is a Smart Wallet"}
+                {accountType === "SCA_4337" && "This is a Smart Account"}
                 {accountType === "UNKNOWN" && "Detecting account type..."}
               </span>
             </div>
