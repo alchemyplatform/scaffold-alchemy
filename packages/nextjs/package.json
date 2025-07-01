@@ -14,8 +14,8 @@
     "vercel:yolo": "vercel --build-env YARN_ENABLE_IMMUTABLE_INSTALLS=false --build-env ENABLE_EXPERIMENTAL_COREPACK=1 --build-env NEXT_PUBLIC_IGNORE_BUILD_ERROR=true --build-env VERCEL_TELEMETRY_DISABLED=1"
   },
   "dependencies": {
-    "@account-kit/infra": "^4.24.0",
-    "@account-kit/react": "^4.24.0",
+    "@account-kit/infra": "^4.31.0",
+    "@account-kit/react": "^4.31.0",
     "@heroicons/react": "^2.1.5",
     "@scaffold-alchemy/shared": "workspace:*",
     "@tanstack/react-query": "^5.64.1",

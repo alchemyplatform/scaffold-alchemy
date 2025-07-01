@@ -48,15 +48,17 @@
   },
   "packageManager": "yarn@3.2.3",
   "dependencies": {
-    "@aa-sdk/core": "^4.24.0",
-    "@account-kit/infra": "^4.24.0",
-    "@account-kit/plugingen": "4.24.0",
-    "@account-kit/smart-contracts": "^4.24.0",
+    "@aa-sdk/core": "^4.31.0",
+    "@account-kit/infra": "^4.31.0",
+    "@account-kit/plugingen": "4.31.0",
+    "@account-kit/smart-contracts": "^4.31.0",
+    "@account-kit/wallet-client": "0.1.0-alpha.9",
     "viem": "2.28.4"
   },
   "devDependencies": {
     "husky": "^9.1.6",
-    "lint-staged": "^15.2.10"
+    "lint-staged": "^15.2.10",
+    "typescript": "^5.8.3"
   },
   "engines": {
     "node": ">=18.18.0"
