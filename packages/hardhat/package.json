@@ -46,9 +46,9 @@
     "typescript": "<5.6.0"
   },
   "dependencies": {
-    "@aa-sdk/core": "^4.12.0",
-    "@account-kit/infra": "^4.12.0",
-    "@account-kit/smart-contracts": "^4.12.0",
+    "@aa-sdk/core": "^4.31.0",
+    "@account-kit/infra": "^4.31.0",
+    "@account-kit/smart-contracts": "^4.31.0",
     "@inquirer/password": "^4.0.2",
     "@openzeppelin/contracts": "^5.0.2",
     "@scaffold-alchemy/shared": "workspace:*",

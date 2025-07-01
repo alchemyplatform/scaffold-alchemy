@@ -15,3 +15,4 @@ export * from "./useTransactor";
 export * from "./useWatchBalance";
 export * from "./useSelectedNetwork";
 export * from "./useAccountType"; //feature_1
+export * from "./useEOAUpgrade"; //feature_1_part_2

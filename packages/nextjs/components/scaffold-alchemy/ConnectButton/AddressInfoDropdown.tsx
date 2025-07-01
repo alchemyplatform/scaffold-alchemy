@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useRef, useState } from "react";
+import { useRef, useState } from "react"; 
 import { NetworkOptions } from "./NetworkOptions";
 import { useLogout } from "@account-kit/react";
 import CopyToClipboard from "react-copy-to-clipboard";
@@ -15,10 +14,12 @@ import {
   DocumentDuplicateIcon,
   QrCodeIcon,
   ShieldCheckIcon, //feature_1
+  ExclamationTriangleIcon, // feature_1_part_2
 } from "@heroicons/react/24/outline";
 import { BlockieAvatar, isENS } from "~~/components/scaffold-alchemy";
-import { useOutsideClick, useAccountType } from "~~/hooks/scaffold-alchemy"; // 'useAccountType' is feature_1
+import { useOutsideClick, useAccountType, useEOAUpgrade } from "~~/hooks/scaffold-alchemy"; // 'useAccountType' is feature_1 AND 'useEOAUpgrade' is feature_1_part_2
 import { getTargetNetworks } from "~~/utils/scaffold-alchemy";
+import { EIP7702_CONFIG } from "~~/utils/scaffold-alchemy/eip7702.config"; // feature_1_part_2
 
 const allowedNetworks = getTargetNetworks();
 
@@ -38,8 +39,18 @@ export const AddressInfoDropdown = ({
   const checkSumAddress = getAddress(address);
   const { logout } = useLogout();
   const { accountType } = useAccountType(); //Feature_1
+  const {
+    upgradeWithPrivateKey,
+    status: upgradeStatus,
+    isEIP7702Supported,
+    isMetaMaskConnected,
+    reset: resetUpgrade
+  } = useEOAUpgrade(); // feature_1_part_2
 
   const [addressCopied, setAddressCopied] = useState(false);
+  const [showPrivateKeyModal, setShowPrivateKeyModal] = useState(false); // feature_1_part_2
+  const [privateKey, setPrivateKey] = useState(""); // feature_1_part_2
+  const [showPrivateKey, setShowPrivateKey] = useState(false); // feature_1_part_2
 
   const [selectingNetwork, setSelectingNetwork] = useState(false);
   const dropdownRef = useRef<HTMLDetailsElement>(null);
@@ -48,6 +59,49 @@ export const AddressInfoDropdown = ({
     dropdownRef.current?.removeAttribute("open");
   };
   useOutsideClick(dropdownRef, closeDropdown);
+
+  // feature_1_part_2: EIP-7702 Upgrade Button block start -----------------
+
+  // Determine if upgrade button should be shown and enabled
+  const showUpgradeButton = accountType === "EOA" && isMetaMaskConnected;
+  const isUpgradeEnabled = showUpgradeButton && isEIP7702Supported;
+  const isUpgrading = upgradeStatus === "upgrading";
+
+  // Get the appropriate message for the account status
+  const getAccountStatusMessage = () => {
+    if (isUpgrading) return "Upgrading...";
+    if (accountType === "EOA" && isMetaMaskConnected) return EIP7702_CONFIG.messages.UPGRADE_BUTTON;
+    if (accountType === "EOA_7702") return EIP7702_CONFIG.messages.UPGRADED_EOA;
+    if (accountType === "SCA_4337") return EIP7702_CONFIG.messages.SMART_ACCOUNT;
+    if (accountType === "UNKNOWN") return EIP7702_CONFIG.messages.DETECTING;
+    return "This is an EOA";
+  };
+
+  const handleUpgradeClick = async () => {
+    if (isUpgradeEnabled && !isUpgrading) {
+      closeDropdown();
+      
+      // Since MetaMask doesn't support EIP-7702 yet, show private key modal directly
+      setShowPrivateKeyModal(true);
+    }
+  };
+
+  const handlePrivateKeyUpgrade = async () => {
+    if (!privateKey) return;
+    
+    try {
+      // Reset the error state before attempting private key upgrade
+      resetUpgrade();
+      await upgradeWithPrivateKey(privateKey);
+      setShowPrivateKeyModal(false);
+      setPrivateKey(""); // Clear private key from memory
+    } catch (error) {
+      console.error("Private key upgrade failed:", error);
+      // Keep the modal open on error
+    }
+  };
+
+  // feature_1_part_2: EIP-7702 Upgrade Button block end -------------------
 
   return (
     <>
@@ -113,15 +167,31 @@ export const AddressInfoDropdown = ({
             </button>
           </li>
           <li className={selectingNetwork ? "hidden" : ""}>
-            <div className="btn-sm !rounded-xl flex gap-3 py-3 px-4 cursor-default hover:bg-base-200">
-              <ShieldCheckIcon className="h-6 w-4" />
-              <span className="whitespace-nowrap font-medium">
-                {accountType === "EOA" && "Upgrade to a Smart Wallet"}
-                {accountType === "EOA_7702" && "This is a Smart Wallet"}
-                {accountType === "SCA_4337" && "This is a Smart Account"}
-                {accountType === "UNKNOWN" && "Detecting account type..."}
-              </span>
-            </div>
+            {showUpgradeButton ? (
+              <button
+                className={`menu-item btn-sm !rounded-xl flex gap-3 py-3 w-full text-left ${isUpgradeEnabled && !isUpgrading
+                    ? ""
+                    : "opacity-50"
+                  } ${!isEIP7702Supported ? "tooltip tooltip-top" : ""
+                  }`}
+                data-tip={!isEIP7702Supported ? EIP7702_CONFIG.messages.TOOLTIP_UNSUPPORTED : undefined}
+                onClick={handleUpgradeClick}
+                disabled={!isUpgradeEnabled || isUpgrading}
+                type="button"
+              >
+                <ShieldCheckIcon className={`h-6 w-4 ml-2 sm:ml-0 ${isUpgrading ? "animate-pulse" : ""}`} />
+                <span className="whitespace-nowrap font-medium">
+                  {isUpgrading ? "Upgrading..." : getAccountStatusMessage()}
+                </span>
+              </button>
+            ) : (
+              <div className="btn-sm !rounded-xl flex gap-3 py-3 px-4 cursor-default hover:bg-base-200">
+                <ShieldCheckIcon className="h-6 w-4" />
+                <span className="whitespace-nowrap font-medium">
+                  {getAccountStatusMessage()}
+                </span>
+              </div>
+            )}
           </li>
           {allowedNetworks.length > 1 ? (
             <li className={selectingNetwork ? "hidden" : ""}>
@@ -147,6 +217,75 @@ export const AddressInfoDropdown = ({
           </li>
         </ul>
       </details>
+
+      {/* Private Key Modal */}
+      {showPrivateKeyModal && (
+        <div className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg flex items-center gap-2">
+              <ExclamationTriangleIcon className="h-6 w-6 text-warning" />
+              EIP-7702 Upgrade with Private Key
+            </h3>
+            
+            <div className="alert alert-warning mt-4">
+              <ExclamationTriangleIcon className="h-6 w-6" />
+              <div>
+                <p className="font-bold">Security Warning</p>
+                <p className="text-sm">
+                  {"MetaMask doesn't support EIP-7702 yet. You can upgrade using your private key, but this is risky. Never share your private key with anyone!"}
+                </p>
+              </div>
+            </div>
+
+            <div className="form-control mt-4">
+              <label className="label">
+                <span className="label-text">Enter your private key (0x...)</span>
+              </label>
+              <div className="relative">
+                <input
+                  type={showPrivateKey ? "text" : "password"}
+                  placeholder="0x..."
+                  className="input input-bordered w-full pr-10"
+                  value={privateKey}
+                  onChange={(e) => setPrivateKey(e.target.value)}
+                />
+                <button
+                  className="absolute right-2 top-1/2 -translate-y-1/2"
+                  onClick={() => setShowPrivateKey(!showPrivateKey)}
+                  type="button"
+                >
+                  {showPrivateKey ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+
+            <div className="modal-action">
+              <button 
+                className="btn btn-ghost" 
+                onClick={() => {
+                  setShowPrivateKeyModal(false);
+                  setPrivateKey("");
+                  setShowPrivateKey(false);
+                }}
+              >
+                Cancel
+              </button>
+              <button 
+                className="btn btn-primary"
+                onClick={handlePrivateKeyUpgrade}
+                disabled={!privateKey || privateKey.length !== 66 || !privateKey.startsWith("0x") || isUpgrading}
+              >
+                {isUpgrading ? "Upgrading..." : "Upgrade Account"}
+              </button>
+            </div>
+          </div>
+          <div className="modal-backdrop" onClick={() => {
+            setShowPrivateKeyModal(false);
+            setPrivateKey("");
+            setShowPrivateKey(false);
+          }}></div>
+        </div>
+      )}
     </>
   );
 };

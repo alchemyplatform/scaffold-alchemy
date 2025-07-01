@@ -15,7 +15,7 @@ export const useClient = (
     network: RPC_CHAIN_NAMES[scaffoldConfig.targetNetworks[0].id] as Network,
   });
   const enhancedApiDecorator = alchemyEnhancedApiActions(alchemy);
-  return { client: client?.extend(enhancedApiDecorator), origClient: client, address };
+  return { client: client?.extend(enhancedApiDecorator as any), origClient: client, address };
 };
 
 export type Client = ReturnType<typeof useClient>["client"];
