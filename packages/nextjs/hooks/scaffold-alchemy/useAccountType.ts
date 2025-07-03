@@ -34,7 +34,7 @@ export const useAccountType = () => {
                 let hasCode = false;
                 if (address && publicClient) {
                     try {
-                        const code = await publicClient.getBytecode({
+                        const code = await publicClient.getCode({
                             address: address as `0x${string}`,
                             blockTag: 'latest'
                         });
