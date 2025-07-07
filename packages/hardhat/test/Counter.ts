@@ -7,7 +7,7 @@ describe("Counter", function () {
 
   before(async () => {
     const counterFactory = await ethers.getContractFactory("Counter");
-    counter = (await counterFactory.deploy()) as Counter;
+    counter = (await counterFactory.deploy(10)) as Counter;
     await counter.waitForDeployment();
   });
 
