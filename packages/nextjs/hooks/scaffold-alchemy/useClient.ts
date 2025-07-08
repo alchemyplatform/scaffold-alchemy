@@ -12,17 +12,6 @@ export const useClient = (
     type: "MultiOwnerModularAccount",
   },
 ) => {
-
-  /*
-  const { client, address } = useSmartAccountClient(config);
-  const alchemy = new Alchemy({
-    url: client?.transport.alchemyRpcUrl,
-    network: RPC_CHAIN_NAMES[scaffoldConfig.targetNetworks[0].id] as Network,
-  });
-  const enhancedApiDecorator = alchemyEnhancedApiActions(alchemy);
-  return { client: client?.extend(enhancedApiDecorator as any), origClient: client, address };
-};
-*/
   // Get Smart Account client (for social login users)
   const { client: smartAccountClient, address: smartAccountAddress } = useSmartAccountClient(config);
 

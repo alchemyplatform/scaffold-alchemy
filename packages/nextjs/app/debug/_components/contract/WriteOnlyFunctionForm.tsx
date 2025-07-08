@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -34,43 +36,103 @@ export const WriteOnlyFunctionForm = ({
   contractAddress,
   inheritedFrom,
 }: WriteOnlyFunctionFormProps) => {
-  const { client } = useClient();
+  const { client, isSmartWallet } = useClient(); // isSmartWallet is part of feature_1_part_3
+
+  // Only use useSendUserOperation for Smart Accounts cases
   const { sendUserOperationAsync, isSendingUserOperation } = useSendUserOperation({
-    client: client,
+    client: !isSmartWallet ? client : undefined, // client is not needed for Smart Wallets, 'client: client' is used for Smart Accounts
     waitForTxn: true,
   });
   const [hash, setHash] = useState<Hex | undefined>();
   const [form, setForm] = useState<Record<string, any>>(() => getInitialFormState(abiFunction));
   const [txValue, setTxValue] = useState<string>("");
+  const [isSmartWalletSending, setIsSmartWalletSending] = useState(false); // feature_1_part_3: Track Smart Wallet sending state
   const { chain } = useChain();
   const writeTxn = useTransactor();
   const { targetNetwork } = useTargetNetwork();
   const writeDisabled = !chain || chain?.id !== targetNetwork.id;
+  const isSending = isSendingUserOperation || isSmartWalletSending; // feature_1_part_3: Track sending state
 
   const handleWrite = async () => {
-    if (sendUserOperationAsync) {
-      try {
-        const makeWriteWithParams = async () => {
-          if (!client) throw Error("You must first login before making an onchain action");
+    
+// feature_1_part_3: Handle Smart Wallet sending block start -----
+    if (!client && !sendUserOperationAsync) {
+      console.error("No client available for transaction");
+      return;
+    }
 
+    try {
+      if (isSmartWallet) {
+        setIsSmartWalletSending(true);
+      }
+
+      const makeWriteWithParams = async (): Promise<Hex> => {
+        const encodedData = encodeFunctionData({
+          functionName: abiFunction.name,
+          abi: abi,
+          args: getParsedContractFunctionArgs(form),
+        });
+
+        let txHash: Hex;
+
+        // For Smart Wallets (EIP-7702), use the client directly
+        if (isSmartWallet && client) {
+          console.log("[WriteOnlyForm] Using Smart Wallet client for UserOp");
+          console.log("[WriteOnlyForm] Target:", contractAddress);
+          console.log("[WriteOnlyForm] Function:", abiFunction.name);
+          console.log("[WriteOnlyForm] Value:", BigInt(txValue || "0"));
+
+          try {
+            const result = await client.sendUserOperation({
+              uo: {
+                target: contractAddress,
+                data: encodedData,
+                value: BigInt(txValue || "0"),
+              },
+            });
+
+            console.log("[WriteOnlyForm] UserOp sent, result:", result);
+
+            // Wait for the transaction if we have a hash
+            if ('hash' in result && result.hash) {
+              console.log("[WriteOnlyForm] Waiting for UserOp transaction:", result.hash);
+              const confirmedHash = await client.waitForUserOperationTransaction({
+                hash: result.hash,
+              });
+              txHash = confirmedHash as Hex;
+              console.log("[WriteOnlyForm] Transaction confirmed:", txHash);
+            } else {
+              throw new Error("Failed to get transaction hash from Smart Wallet operation");
+            }
+          } catch (error) {
+            console.error("[WriteOnlyForm] Smart Wallet operation failed:", error);
+            throw error;
+          }
+        } else if (sendUserOperationAsync) {
+          // Use the SDK's sendUserOperationAsync for regular smart accounts
           const { hash } = await sendUserOperationAsync({
             uo: {
               target: contractAddress,
-              data: encodeFunctionData({
-                functionName: abiFunction.name,
-                abi: abi,
-                args: getParsedContractFunctionArgs(form),
-              }),
-              value: BigInt(txValue),
+              data: encodedData,
+              value: BigInt(txValue || "0"),
             },
           });
-          setHash(hash);
-          return hash;
-        };
-        await writeTxn(makeWriteWithParams);
-        onChange();
-      } catch (e: any) {
-        console.error("⚡️ ~ file: WriteOnlyFunctionForm.tsx:handleWrite ~ error", e);
+          txHash = hash as Hex;
+        } else {
+          throw Error("No method available to send transaction");
+        }
+
+        setHash(txHash);
+        return txHash;
+      };
+
+      await writeTxn(makeWriteWithParams);
+      onChange();
+    } catch (e: any) {
+      console.error("⚡️ ~ file: WriteOnlyFunctionForm.tsx:handleWrite ~ error", e);
+    } finally {
+      if (isSmartWallet) {
+        setIsSmartWalletSending(false);
       }
     }
   };
@@ -82,6 +144,7 @@ export const WriteOnlyFunctionForm = ({
   useEffect(() => {
     setDisplayedTxResult(txResult);
   }, [txResult]);
+// feature_1_part_3: Handle Smart Wallet sending block end -----
 
   // TODO use `useMemo` to optimize also update in ReadOnlyFunctionForm
   const transformedFunction = transformAbiFunction(abiFunction);
@@ -141,10 +204,10 @@ export const WriteOnlyFunctionForm = ({
           >
             <button
               className="btn btn-secondary btn-sm"
-              disabled={writeDisabled || isSendingUserOperation}
+              disabled={writeDisabled || isSending || (!client && !sendUserOperationAsync)}
               onClick={handleWrite}
             >
-              {isSendingUserOperation && <span className="loading loading-spinner loading-xs"></span>}
+              {isSending && <span className="loading loading-spinner loading-xs"></span>}
               Send 💸
             </button>
           </div>

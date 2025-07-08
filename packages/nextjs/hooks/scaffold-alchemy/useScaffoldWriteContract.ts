@@ -1,8 +1,10 @@
+/* eslint-disable prettier/prettier */
+
 import { useEffect, useState } from "react";
 import { useClient } from "./useClient";
 import { useSendUserOperation } from "@account-kit/react";
 import { ExtractAbiFunctionNames } from "abitype";
-import { Abi, EncodeFunctionDataParameters, WriteContractReturnType, encodeFunctionData } from "viem";
+import { Abi, EncodeFunctionDataParameters, WriteContractReturnType, encodeFunctionData, Hex } from "viem"; // Hex is part of feature_1_part_3
 import { UseWriteContractParameters, useWriteContract } from "wagmi";
 import { useSelectedNetwork } from "~~/hooks/scaffold-alchemy";
 import { useDeployedContractInfo, useTransactor } from "~~/hooks/scaffold-alchemy";
@@ -70,6 +72,7 @@ export function useScaffoldWriteContract<TContractName extends ContractName>(
 
   const writeTx = useTransactor();
   const [isMining, setIsMining] = useState(false);
+  const [isSmartWalletMining, setIsSmartWalletMining] = useState(false); //feature_1_part_3
 
   const wagmiContractWrite = useWriteContract(finalWriteContractParams);
 
@@ -80,10 +83,12 @@ export function useScaffoldWriteContract<TContractName extends ContractName>(
     chainId: selectedNetwork.id as AllowedChainIds,
   });
 
-  const { client } = useClient();
+  const { client, isSmartWallet } = useClient(); // isSmartWallet is part of feature_1_part_3
 
+  // Only use useSendUserOperation for Smart Accounts cases
+  // For Smart Wallets, we'll use the client directly to avoid the EOA fallback
   const { sendUserOperationAsync, sendUserOperation } = useSendUserOperation({
-    client,
+    client: !isSmartWallet ? client : undefined, // feature_1_part_3: client is undefined for Smart Wallets otherwise it falls back to EOA
     waitForTxn: true,
   });
 
@@ -103,23 +108,70 @@ export function useScaffoldWriteContract<TContractName extends ContractName>(
       return;
     }
 
+// feature_1_part_3: useScaffoldWriteContract now supports Smart Wallets (EIP-7702) userOps block start ------
     try {
       setIsMining(true);
+      if (isSmartWallet) {
+        setIsSmartWalletMining(true);
+      }
+
       const { blockConfirmations, onBlockConfirmation } = options || {};
-      const makeWriteWithParams = async () => {
-        const { hash } = await sendUserOperationAsync({
-          uo: {
-            target: deployedContractData.address,
-            data: encodeFunctionData({
-              abi: deployedContractData.abi,
-              functionName: variables.functionName,
-              args: variables.args || [],
-            } as EncodeFunctionDataParameters<Abi, string>),
-            value: variables.value,
-          },
-        });
-        return hash;
+
+      const makeWriteWithParams = async (): Promise<Hex> => {
+        const encodedData = encodeFunctionData({
+          abi: deployedContractData.abi,
+          functionName: variables.functionName,
+          args: variables.args || [],
+        } as EncodeFunctionDataParameters<Abi, string>);
+
+        // For Smart Wallets (EIP-7702), use the client directly
+        if (isSmartWallet && client) {
+          console.log("[ScaffoldWrite] Using Smart Wallet client for UserOp");
+          console.log("[ScaffoldWrite] Target:", deployedContractData.address);
+          console.log("[ScaffoldWrite] Function:", variables.functionName);
+          console.log("[ScaffoldWrite] Value:", variables.value || 0n);
+
+          try {
+            const result = await client.sendUserOperation({
+              uo: {
+                target: deployedContractData.address,
+                data: encodedData,
+                value: variables.value || 0n,
+              },
+            });
+
+            console.log("[ScaffoldWrite] UserOp sent, result:", result);
+
+            // Wait for the transaction if we have a hash
+            if ('hash' in result && result.hash) {
+              console.log("[ScaffoldWrite] Waiting for UserOp transaction:", result.hash);
+              const txHash = await client.waitForUserOperationTransaction({
+                hash: result.hash,
+              });
+              console.log("[ScaffoldWrite] Transaction confirmed:", txHash);
+              return txHash as Hex;
+            }
+
+            throw new Error("Failed to get transaction hash from Smart Wallet operation");
+          } catch (error) {
+            console.error("[ScaffoldWrite] Smart Wallet operation failed:", error);
+            throw error;
+          }
+        } else if (sendUserOperationAsync) {
+          // Use the SDK's sendUserOperationAsync for regular smart accounts
+          const { hash } = await sendUserOperationAsync({
+            uo: {
+              target: deployedContractData.address,
+              data: encodedData,
+              value: variables.value,
+            },
+          });
+          return hash as Hex;
+        } else {
+          throw new Error("No method available to send transaction");
+        }
       };
+
       const writeTxResult = await writeTx(makeWriteWithParams, { blockConfirmations, onBlockConfirmation });
 
       return writeTxResult;
@@ -127,9 +179,11 @@ export function useScaffoldWriteContract<TContractName extends ContractName>(
       throw e;
     } finally {
       setIsMining(false);
+      setIsSmartWalletMining(false);
     }
   };
-
+// feature_1_part_3: useScaffoldWriteContract now supports Smart Wallets (EIP-7702) userOps block end ------
+  
   const sendContractWriteTx = <
     TContractName extends ContractName,
     TFunctionName extends ExtractAbiFunctionNames<ContractAbi<TContractName>, "nonpayable" | "payable">,
@@ -141,25 +195,53 @@ export function useScaffoldWriteContract<TContractName extends ContractName>(
       return;
     }
 
-    sendUserOperation({
-      uo: {
-        target: deployedContractData.address,
-        data: encodeFunctionData({
-          abi: deployedContractData.abi,
-          functionName: variables.functionName,
-          args: variables.args || [],
-        } as EncodeFunctionDataParameters<Abi, string>),
-        value: variables.value,
-      },
-    });
+// feature_1_part_3: useScaffoldWriteContract now supports Smart Wallets (EIP-7702) userOps block start ------
+    if (!client && !isSmartWallet) {
+      notification.error(`You must first login before making an onchain action`);
+      return;
+    }
+
+    const encodedData = encodeFunctionData({
+      abi: deployedContractData.abi,
+      functionName: variables.functionName,
+      args: variables.args || [],
+    } as EncodeFunctionDataParameters<Abi, string>);
+
+    // For Smart Wallets (EIP-7702), use the client directly
+    if (isSmartWallet && client) {
+      console.log("[ScaffoldWrite] Using Smart Wallet client for UserOp (sync)");
+      setIsSmartWalletMining(true);
+      client.sendUserOperation({
+        uo: {
+          target: deployedContractData.address,
+          data: encodedData,
+          value: variables.value || 0n,
+        },
+      }).then(() => {
+        setIsSmartWalletMining(false);
+      }).catch((error: any) => {
+        console.error("Smart Wallet operation failed:", error);
+        setIsSmartWalletMining(false);
+      });
+    } else if (sendUserOperation) {
+      // Use the SDK's sendUserOperation for regular smart accounts
+      sendUserOperation({
+        uo: {
+          target: deployedContractData.address,
+          data: encodedData,
+          value: variables.value,
+        },
+      });
+    }
   };
 
   return {
     ...wagmiContractWrite,
-    isMining,
+    isMining: isMining || isSmartWalletMining,
     // Overwrite wagmi's writeContactAsync
     writeContractAsync: sendContractWriteAsyncTx,
     // Overwrite wagmi's writeContract
     writeContract: sendContractWriteTx,
   };
 }
+// feature_1_part_3: useScaffoldWriteContract now supports Smart Wallets (EIP-7702) userOps block end ------
