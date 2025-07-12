@@ -18,3 +18,4 @@ export * from "./useAccountType"; //feature_1
 export * from "./useEOAUpgrade"; //feature_1_part_2
 export * from "./useSmartWalletClient"; //feature_1_part_3
 export * from "./useClient"; //feature_1_part_3
+export * from "./useSmartAccountDeployment"; // feature_2

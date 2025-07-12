@@ -6,7 +6,7 @@ import { useAccount, usePublicClient } from "wagmi"; //usePublicClient is part o
 import { useClient } from "./useClient";
 import { useTargetNetwork } from "./useTargetNetwork"; //useTargetNetwork is part of feature_1_part_2
 
-export type AccountType = "EOA" | "EOA_7702" | "SCA_4337" | "UNKNOWN";
+export type AccountType = "EOA" | "EOA_7702" | "SCA_4337" | "SCA_4337_UNDEPLOYED" | "UNKNOWN"; // "SCA_4337_UNDEPLOYED" is part of feature_2
 
 export const useAccountType = () => {
     const [accountType, setAccountType] = useState<AccountType>("UNKNOWN");
@@ -47,7 +47,22 @@ export const useAccountType = () => {
 
                     if (!isExternalWallet) {
                         // Has SCA and no external wallet = email/social login
-                        setAccountType("SCA_4337");
+                        // feature_2: Check if the smart account is deployed
+                        if (publicClient) {
+                            try {
+                                const code = await publicClient.getCode({
+                                    address: address as `0x${string}`,
+                                    blockTag: 'latest'
+                                });
+                                const isDeployed = code !== undefined && code !== "0x";
+                                setAccountType(isDeployed ? "SCA_4337" : "SCA_4337_UNDEPLOYED");
+                            } catch (error) {
+                                console.error("[useAccountType] Error checking deployment:", error);
+                                setAccountType("SCA_4337_UNDEPLOYED");
+                            }
+                        } else {
+                            setAccountType("SCA_4337_UNDEPLOYED");
+                        }
                     } else {
                         // This shouldn't happen if isSmartWallet detection works
                         // But keeping as fallback
@@ -58,7 +73,22 @@ export const useAccountType = () => {
                     setAccountType("EOA");
                 } else if (!isConnected && address) {
                     // Has address but not connected via wagmi = likely email/social
-                    setAccountType("SCA_4337");
+                    // Check deployment status
+                    if (publicClient && address) {
+                        try {
+                            const code = await publicClient.getCode({
+                                address: address as `0x${string}`,
+                                blockTag: 'latest'
+                            });
+                            const isDeployed = code !== undefined && code !== "0x";
+                            setAccountType(isDeployed ? "SCA_4337" : "SCA_4337_UNDEPLOYED");
+                        } catch (error) {
+                            console.error("[useAccountType] Error checking deployment:", error);
+                            setAccountType("SCA_4337_UNDEPLOYED");
+                        }
+                    } else {
+                        setAccountType("SCA_4337_UNDEPLOYED");
+                    }
                 } else {
                     setAccountType("UNKNOWN");
                 }

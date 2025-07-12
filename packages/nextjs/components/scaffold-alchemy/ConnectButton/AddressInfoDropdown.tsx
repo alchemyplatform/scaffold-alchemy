@@ -1,4 +1,6 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { useRef, useState } from "react"; 
 import { NetworkOptions } from "./NetworkOptions";
 import { useLogout } from "@account-kit/react";
@@ -15,9 +17,10 @@ import {
   QrCodeIcon,
   ShieldCheckIcon, //feature_1
   ExclamationTriangleIcon, // feature_1_part_2
+  RocketLaunchIcon, // feature_2
 } from "@heroicons/react/24/outline";
 import { BlockieAvatar, isENS } from "~~/components/scaffold-alchemy";
-import { useOutsideClick, useAccountType, useEOAUpgrade } from "~~/hooks/scaffold-alchemy"; // 'useAccountType' is feature_1 AND 'useEOAUpgrade' is feature_1_part_2
+import { useOutsideClick, useAccountType, useEOAUpgrade, useSmartAccountDeployment } from "~~/hooks/scaffold-alchemy"; // 'useAccountType' is feature_1 AND 'useEOAUpgrade' is feature_1_part_2 AND 'useSmartAccountDeployment' is feature_2
 import { getTargetNetworks } from "~~/utils/scaffold-alchemy";
 import { EIP7702_CONFIG } from "~~/utils/scaffold-alchemy/eip7702.config"; // feature_1_part_2
 
@@ -46,6 +49,10 @@ export const AddressInfoDropdown = ({
     isMetaMaskConnected,
     reset: resetUpgrade
   } = useEOAUpgrade(); // feature_1_part_2
+  const {
+    isDeploying,
+    deploySmartAccount,
+  } = useSmartAccountDeployment(); // feature_2
 
   const [addressCopied, setAddressCopied] = useState(false);
   const [showPrivateKeyModal, setShowPrivateKeyModal] = useState(false); // feature_1_part_2
@@ -67,12 +74,17 @@ export const AddressInfoDropdown = ({
   const isUpgradeEnabled = showUpgradeButton && isEIP7702Supported;
   const isUpgrading = upgradeStatus === "upgrading";
 
+  // feature_2: Determine if deploy button should be shown
+  const showDeployButton = accountType === "SCA_4337_UNDEPLOYED";
+
   // Get the appropriate message for the account status
   const getAccountStatusMessage = () => {
     if (isUpgrading) return "Upgrading...";
+    if (isDeploying) return "Deploying...";
     if (accountType === "EOA" && isMetaMaskConnected) return EIP7702_CONFIG.messages.UPGRADE_BUTTON;
     if (accountType === "EOA_7702") return EIP7702_CONFIG.messages.UPGRADED_EOA;
     if (accountType === "SCA_4337") return EIP7702_CONFIG.messages.SMART_ACCOUNT;
+    if (accountType === "SCA_4337_UNDEPLOYED") return "Deploy Smart Account";
     if (accountType === "UNKNOWN") return EIP7702_CONFIG.messages.DETECTING;
     return "This is an EOA";
   };
@@ -83,6 +95,14 @@ export const AddressInfoDropdown = ({
       
       // Since MetaMask doesn't support EIP-7702 yet, show private key modal directly
       setShowPrivateKeyModal(true);
+    }
+  };
+
+  // Handle deploy button click for SCA_4337_UNDEPLOYED accounts
+  const handleDeployClick = async () => {
+    if (!isDeploying) {
+      closeDropdown();
+      await deploySmartAccount();
     }
   };
 
@@ -167,9 +187,23 @@ export const AddressInfoDropdown = ({
             </button>
           </li>
           <li className={selectingNetwork ? "hidden" : ""}>
-            {showUpgradeButton ? (
+            {showDeployButton ? (
               <button
-                className={`menu-item btn-sm !rounded-xl flex gap-3 py-3 w-full text-left ${isUpgradeEnabled && !isUpgrading
+                className={`menu-item btn-sm !rounded-xl flex gap-3 py-3 w-full text-left ${isDeploying ? "opacity-50" : ""
+                  }`}
+                onClick={handleDeployClick}
+                disabled={isDeploying}
+                type="button"
+              >
+                <RocketLaunchIcon className={`h-6 w-4 ml-2 sm:ml-0 ${isDeploying ? "animate-pulse" : ""}`} />
+                <span className="whitespace-nowrap font-medium">
+                  {isDeploying ? "Deploying..." : "Deploy Smart Account"}
+                </span>
+              </button>
+            ) : showUpgradeButton ? (
+              <button
+                className={`menu-item btn-sm !rounded-xl flex gap-3 py-3 w-full text-left ${
+                  isUpgradeEnabled && !isUpgrading
                     ? ""
                     : "opacity-50"
                   } ${!isEIP7702Supported ? "tooltip tooltip-top" : ""
@@ -232,19 +266,19 @@ export const AddressInfoDropdown = ({
               <div>
                 <p className="font-bold">Security Warning</p>
                 <p className="text-sm">
-                  {"MetaMask doesn't support EIP-7702 yet. You can upgrade using your private key, but this is risky. Never share your private key with anyone!"}
+                  {"WARNING: This procedure is experimental, use it in a dev environment. You can upgrade your Metamask Wallet implementing eip-7702 authorization using your private key. Your key won't be stored and will be asked to you only once. REMEMBER, DO NOT SHARE YOUR PRIVATE KEY WITH ANYONE!"}
                 </p>
               </div>
             </div>
 
             <div className="form-control mt-4">
               <label className="label">
-                <span className="label-text">Enter your private key (0x...)</span>
+                <span className="label-text">Enter &quot;0x&quot; followed by your private key (0x...)</span>
               </label>
               <div className="relative">
                 <input
                   type={showPrivateKey ? "text" : "password"}
-                  placeholder="0x..."
+                  placeholder="0xabcd1234..."
                   className="input input-bordered w-full pr-10"
                   value={privateKey}
                   onChange={(e) => setPrivateKey(e.target.value)}
